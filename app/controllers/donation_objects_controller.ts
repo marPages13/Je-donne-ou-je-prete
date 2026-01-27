@@ -200,16 +200,6 @@ export default class DonationObjectsController {
       }
 
       // 3. Envoi du mail (ton code actuel)
-      await mail.send((message) => {
-        message
-          .to(`${item.user.email}`)
-          .from('dami.scoot3@gmail.com')
-          .subject(`Demande de réservation : ${item.name}`)
-          .htmlView('emails/reservation', {
-            item: item,
-            requester: auth.user,
-          })
-      })
 
       // 4. MAJ du status à 2 et sauvegarde en DB
       item.status = 2
