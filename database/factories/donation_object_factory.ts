@@ -4,19 +4,19 @@ import { DateTime } from 'luxon'
 
 export const DonationObjectFactory = factory
   .define(DonationObject, async ({ faker }) => {
-    const availableImages = [
-      'jf6ae3md1vx5rpeb7wuctf8s.webp',
-      'gfr4xhhw37hflfjt5fi35tm9.webp',
-      'n6d4miadmzdh4r4ns5ryfx50.webp',
-      'x822ydtkt4avju6s6mx1go1v.webp',
-      'qrchvdqd4c47wkjoadwsm8o9.webp',
-      'n6d4miadmzdh4r4ns5ryfx50.webp',
-      't4n41e8b0sbcerfn7rxgwz4y.webp',
-      'xe2pa2n1c1wktcdcp7sq95hh.webp',
-      'j89qhtguaz4dl04o2u523bhy.webp',
-      'n6d4miadmzdh4r4ns5ryfx50.webp',
-
-    ]
+const availableImages = [
+  'ayszblb8xxbr6b9xhyg4el77.webp',
+  'gfr4xhhw37hflfjt5fi35tm9.webp',
+  'j89qhtguaz4dl04o2u523bhy.webp',
+  'l0omffpcb7howtrp6b3htyzi.webp',
+  'n6d4miadmzdh4r4ns5ryfx50.webp',
+  'n7drdp41tmoc554wz4fohsch.webp',
+  'qrchvdqd4c47wkjoadwsm8o9.webp',
+  'sgnxlx9oygjqroptdaxfpz4.webp',
+  't4n41e8b0sbcerfn7rxgwz4y.webp',
+  'v1jsbhoxtvv56xd3mp7i4ue8.webp',
+  'xe2pa2n1c1wktcdcp7sq95hh.webp'
+];
     return {
       name: faker.commerce.productName(),
       user_id : 1,

@@ -206,18 +206,18 @@ async edit({ params, view, bouncer }: HttpContext) {
       item.reservedBy = user.id
       await item.save()
 
-      // ENVOI DU MAIL
-      await mail.send((message: Message) => {
-        message
-          .to(item.user.email)
-          .from('dami.scoot3@gmail.com')
-          .subject(`Demande de réservation : ${item.name}`)
-          .htmlView('emails/reservation', {
-            item: item.toJSON(),
-            requester: user.toJSON(),
-            customMessage: userMessage,
-          })
-      })
+      // // ENVOI DU MAIL
+      // await mail.send((message: Message) => {
+      //   message
+      //     .to(item.user.email)
+      //     .from('dami.scoot3@gmail.com')
+      //     .subject(`Demande de réservation : ${item.name}`)
+      //     .htmlView('emails/reservation', {
+      //       item: item.toJSON(),
+      //       requester: user.toJSON(),
+      //       customMessage: userMessage,
+      //     })
+      // })
 
 
       session.flash('success', 'Demande envoyée ! Retrouve-la dans ton historique.')
