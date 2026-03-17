@@ -1,138 +1,170 @@
-@let(title = 'Proposer un nouvel objet')
+@let(title = t('messages.add_item.title'))
 @let(css = 'ajout.css')
 @include('partials/header')
 
+@let(catMap = {
+'Sport & Loisirs': 'sport',
+'Culture & Livres': 'books',
+'Vêtements': 'clothes',
+'Informatique & Tech': 'tech',
+'Maison & Cuisine': 'home',
+'Jouets & Enfants': 'toys',
+'Électroménager': 'appliances',
+'Musique & Art': 'art',
+'Bureau & Fournitures': 'office'
+})
+
 <main>
-    <h1>Proposer un nouvel objet</h1>
+  @include('partials/flash')
+  <h1>{{ t('messages.add_item.title') }}</h1>
 
-    <form action="/items" method="POST" enctype="multipart/form-data">
-        {{ csrfField() }}
+  {{-- Utilisation de route() pour l'action du formulaire --}}
+  <form action="{{ route('donation_objects.store') }}" method="POST" enctype="multipart/form-data">
+    {{ csrfField() }}
 
-        <div >
-                @!component('components/input', {
-                    name : 'image',
-                    label : "Image de l'objet",
-                    type : 'file',
-                    attributes: { id: 'image', onchange: 'previewImage(event)' }
-                })
-        <img id="imageDisplay" src="" alt="Aperçu de l'image sélectionnée">
-        </div>
+    <div>
+      @!component('components/input', {
+      name : 'image',
+      label : t('messages.add_item.image_label'),
+      type : 'file',
+      attributes: { id: 'image', onchange: 'previewImage(event)' }
+      })
+      <img class="CACHER" id="imageDisplay" src="" alt="Preview">
+    </div>
 
+    <br>
+
+    {{-- Nom de l'objet --}}
+    <div class="field-group">
+      <label for="name">{{ t('messages.add_item.name_label') }}</label><br>
+      <input type="text" id="name" name="name" value="{{ old('name') || '' }}" required
+        placeholder="{{ t('messages.add_item.name_placeholder') }}" />
+      @if(flashMessages.has('errors.name'))
+      <small class="errors">{{ flashMessages.get('errors.name') }}</small>
+      @endif
+    </div>
+
+    <br>
+
+    {{-- Description --}}
+    <div class="field-group">
+      <label for="description">{{ t('messages.add_item.desc_label') }}</label><br>
+      <textarea id="description" name="description" rows="5" required
+        placeholder="{{ t('messages.add_item.desc_placeholder') }}">{{ old('description') || '' }}</textarea>
+      @if(flashMessages.has('errors.description'))
+      <small class="errors">{{ flashMessages.get('errors.description') }}</small>
+      @endif
+    </div>
+
+    <br>
+
+    <div class="field-group">
+      <label for="IsUrgent">Urgent ?</label>
+      <input type="checkbox" id="IsUrgent" name="IsUrgent" value="1">
+    </div>
+
+    {{-- Catégorie --}}
+    <div class="field-group">
+      <label for="categorie">{{ t('messages.add_item.cat_label') }}</label><br>
+      <select name="categorie" id="categorie" required>
+        <option value="" disabled {{ !old('categorie') ? 'selected' : '' }}>
+          {{ t('messages.add_item.cat_select') }}
+        </option>
+
+        {{-- Liste simple des clés techniques --}}
+        @each(key in ['sport', 'books', 'clothes', 'tech', 'home', 'toys', 'appliances', 'art', 'office'])
+        <option value="{{ key }}" {{ (old('categorie')===key) ? 'selected' : '' }}>
+          {{ t(`messages.add_item.categories.${key}`) }}
+        </option>
+        @end
+      </select>
+    </div>
+
+    <br>
+
+    {{-- Type (Don/Prêt) --}}
+    <div class="field-group">
+      <label for="type">{{ t('messages.add_item.status_label') }}</label><br>
+      <select id="type" name="type" required>
+        <option value="">{{ t('messages.add_item.status_select') }}</option>
+        <option value="0" {{ old('type')=='0' ? 'selected' : '' }}>{{ t('messages.add_item.status_give') }}</option>
+        <option value="1" {{ old('type')=='1' ? 'selected' : '' }}>{{ t('messages.add_item.status_lend') }}</option>
+      </select>
+    </div>
+
+    <br>
+
+    {{-- Section Dates --}}
+    <div id="availability_section" class="field-group" style="display: none;">
+      <p>{{ t('messages.add_item.loan_details') }}</p>
+
+      {{-- Toujours visible si Don ou Prêt --}}
+      <div class="field">
+        <label for="available_from">{{ t('messages.add_item.from') }}</label>
+        <input type="datetime-local" id="available_from" name="available_from"
+          value="{{ old('available_from') || '' }}">
+      </div>
+
+      {{-- Masqué si c'est un Don --}}
+      <div id="until_field">
         <br>
-
-        {{-- Nom de l'objet --}}
-        <div class="field-group">
-            <label for="name">Nom de l'objet :</label><br>
-            <input type="text" id="name" name="name" value="{{ old('name') || '' }}" required placeholder="Ex: Étagère" />
-            @if(flashMessages.has('errors.name'))
-                <small style="color: red;">{{ flashMessages.get('errors.name') }}</small>
-            @endif
+        <div class="field">
+          <label for="available_until">{{ t('messages.add_item.until') }}</label>
+          <input type="datetime-local" id="available_until" name="available_until"
+            value="{{ old('available_until') || '' }}">
         </div>
+      </div>
+    </div>
 
-        <br>
+    <br>
 
-        {{-- Description --}}
-        <div class="field-group">
-            <label for="description">Description détaillée :</label><br>
-            <textarea id="description" name="description" rows="5" required placeholder="Décrivez l'état et les caractéristiques.">{{ old('description') || '' }}</textarea>
-            @if(flashMessages.has('errors.description'))
-                <small style="color: red;">{{ flashMessages.get('errors.description') }}</small>
-            @endif
-        </div>
-
-        <br>
-
-        {{-- Catégorie --}}
-        <div class="field-group">
-            <label for="categorie">Catégorie :</label><br>
-            <select id="categorie" name="categorie" required>
-                <option value="">-- Sélectionner une catégorie --</option>
-                @each(cat in ['Sport & Loisirs', 'Culture & Livres', 'Vêtements', 'Informatique & Tech', 'Maison & Cuisine', 'Jouets & Enfants', 'Électroménager', 'Musique & Art', 'Bureau & Fournitures'])
-                    <option value="{{ cat }}" {{ old('categorie') == cat ? 'selected' : '' }}>{{ cat }}</option>
-                @endeach
-            </select>
-        </div>
-
-        <br>
-
-        {{-- Type (Don/Prêt) --}}
-        <div class="field-group">
-            <label for="type">Statut (Donner ou Prêter) :</label><br>
-            <select id="type" name="type" required>
-                <option value="">-- Sélectionner le statut --</option>
-                <option value="0" {{ old('type') == '0' ? 'selected' : '' }}>Donner</option>
-                <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>Prêter</option>
-            </select>
-        </div>
-
-        <br>
-
-        {{-- Section Dates pour le prêt --}}
-        <div id="dates_section" style="display: none; background: #f9fafb; padding: 20px; border-radius: 10px; border-left: 4px solid #007bff;">
-            <p style="margin-top: 0; font-weight: bold; color: #007bff;">Détails du prêt</p>
-            
-            <div class="field">
-                <label for="available_from">Disponible à partir de :</label><br>
-                <input type="datetime-local" id="available_from" name="available_from" value="{{ old('available_from') || '' }}">
-                @if(flashMessages.has('errors.available_from'))
-                    <br><small style="color: red;">{{ flashMessages.get('errors.available_from') }}</small>
-                @endif
-            </div>
-
-            <br>
-
-            <div class="field">
-                <label for="available_until">Jusqu'à (date de fin) :</label><br>
-                <input type="datetime-local" id="available_until" name="available_until" value="{{ old('available_until') || '' }}">
-                @if(flashMessages.has('errors.available_until'))
-                    <br><small style="color: red;">{{ flashMessages.get('errors.available_until') }}</small>
-                @endif
-            </div>
-        </div>
-
-        <br>
-
-        <div>
-            <button type="submit" style="color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                Ajouter l'objet
-            </button>
-            <p><a href="/home">Retour à la page d'accueil</a></p>
-        </div>
-    </form>
-
+    <div>
+      <button type="submit">
+        {{ t('messages.add_item.submit') }}
+      </button>
+      {{-- Lien retour vers Home via route() --}}
+      <p><a href="{{ route('donation_objects.index') }}">{{ t('messages.add_item.back') }}</a></p>
+    </div>
+  </form>
 </main>
 
 <script>
-    const typeSelector = document.getElementById('type');
-    const datesSection = document.getElementById('dates_section');
-    const imageSelector = document.getElementById('image');
-    const imageDisplay = document.getElementById('imageDisplay');
+  const typeSelector = document.getElementById('type');
+  const availabilitySection = document.getElementById('availability_section');
+  const untilField = document.getElementById('until_field');
 
-    // Gestion de l'affichage dynamique des dates
-    function toggleDates() {
-        if (typeSelector.value === '1') {
-            datesSection.style.display = 'block';
-        } else {
-            datesSection.style.display = 'none';
-        }
+  // AJOUTE CES DEUX LIGNES ICI :
+  const imageSelector = document.getElementById('image');
+  const imageDisplay = document.getElementById('imageDisplay');
+
+  function toggleDates() {
+    const val = typeSelector.value;
+    if (val === '0') {
+      availabilitySection.style.display = 'block';
+      untilField.style.display = 'none';
+    } else if (val === '1') {
+      availabilitySection.style.display = 'block';
+      untilField.style.display = 'block';
+    } else {
+      availabilitySection.style.display = 'none';
     }
+  }
 
-    typeSelector.addEventListener('change', toggleDates);
-    
-    // Au chargement (pour garder l'état si erreur de validation)
-    window.addEventListener('DOMContentLoaded', toggleDates);
+  typeSelector.addEventListener('change', toggleDates);
+  window.addEventListener('DOMContentLoaded', toggleDates);
 
-    // Aperçu de l'image
-    imageSelector.addEventListener('change', function (event) {
-        if (event.target.files && event.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                imageDisplay.src = e.target.result;
-                imageDisplay.style.display = 'block';
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-    });
+  // CETTE PARTIE FONCTIONNERA MAINTENANT :
+  imageSelector.addEventListener('change', function (event) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        imageDisplay.src = e.target.result;
+        imageDisplay.classList.remove('CACHER'); // Enlève la classe qui cache
+        imageDisplay.style.display = 'block';
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  });
 </script>
 
 @include('partials/footer')

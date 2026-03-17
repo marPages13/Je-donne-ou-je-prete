@@ -1,8 +1,24 @@
+@import url(variable.css);
 p{
   width: 98%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+form{
+    flex: 1;
+}
+.btn-republish{
+    width: 100%; 
+    background-color: var(--colorButton);
+    color:  var(--colorback);
+    border: none; 
+    padding: 7px 0; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    font-size: 10px; 
+    font-weight: bold;
 }
 .profile-icon {
     width: 40px;
@@ -43,7 +59,7 @@ p{
 .user-photo {
     width: 150px;
     height: 150px;
-    background-color: #dcdcdc;
+    background-color: var(--colorItem);
     border-radius: 10px;
     margin-bottom: 10px;
 }
@@ -60,7 +76,7 @@ p{
     margin-left: 0; 
     width: 100%;
     flex-grow: 1;
-    margin-bottom:   100px;
+    margin-bottom: 100px;
 }
 
 .section h2 {
@@ -83,7 +99,7 @@ p{
     flex: 0 0 calc(20% - (15px * 4 / 5));
     text-align: center;
     flex-shrink: 0;
-    background-color: #dddddd;
+    background-color: var(--colorItem);
     border-radius: 8px;
     padding: 10px;
     height: 300px;
@@ -108,7 +124,7 @@ p{
 .item div {
     width: 90px;
     height: 90px;
-    background-color: #dcdcdc;
+    background-color: var(--colorItem);
     border-radius: 5px;
     margin-bottom: 5px;
 }
@@ -120,7 +136,13 @@ p{
     gap: 5px;
     width: 100%;
     margin-top: 10px;
-} 
+}
+
+.item-actions div {
+    display: flex; 
+    gap: 5px; 
+    margin-bottom: 5px;
+}
 
 .btn-edit, .btn-delete {
     display: block;
@@ -142,13 +164,15 @@ p{
     transition: transform 0.2s;
 }
 .btn-edit {
-    background-color: #f39c12;
-    color: white;
+    background-color: #e7b475;
+    color: var(--colorback);
+    flex: 1; 
+    text-align: center;
 }
 
 .btn-delete {
-    background-color: #e74c3c;
-    color: white;
+    background-color: #780c28;
+    color: var(--colorback);
 
 }
 @media(max-width: 1700px ){

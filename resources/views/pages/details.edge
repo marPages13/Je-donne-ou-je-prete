@@ -1,6 +1,18 @@
-@let(title = 'Détails de l\'objet')
+@let(title = t('messages.show_item.reserve'))
 @let(css = 'details.css')
 @include('partials/header')
+@let(catMap = {
+'Sport & Loisirs': 'sport',
+'Culture & Livres': 'books',
+'Vêtements': 'clothes',
+'Informatique & Tech': 'tech',
+'Maison & Cuisine': 'home',
+'Jouets & Enfants': 'toys',
+'Électroménager': 'appliances',
+'Musique & Art': 'art',
+'Bureau & Fournitures': 'office'
+})
+
 
 <main>
   <div class="gauche">
@@ -10,43 +22,67 @@
   <div class="droit">
     {{-- Informations de l'objet --}}
     <h1>{{ object.name }}</h1>
-    
+
     <h2 class="item-status">
       @if(!object.type)
-        À donner
+      {{ t('messages.common.give') }}
       @else
-        À prêter
+      {{ t('messages.common.lend') }}
       @end
-      | {{ object.categorie }}
+      @let(currentKey = catMap[object.categorie] || object.categorie)
+      | {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
     </h2>
 
-    <h3>Publié par : {{ object.user.Username }}</h3>
+    <h3>{{ t('messages.show_item.published_by') }} {{ object.user.Username }}</h3>
+
     <h3 class="item-date">
-      @if(!object.type)
-      @else
-        Disponible du 
-        <strong>{{ object.availableFrom.toFormat('dd LLL yyyy') }}</strong> 
-        au 
-        <strong>{{ object.availableUntil.toFormat('dd LLL yyyy') }}</strong>
+      @if(object.type == 1)
+      {{-- Cas du PRÊT : On affiche du ... au ... --}}
+      {{ t('messages.show_item.available_from') }}
+      <strong>{{ object.availableFrom.toFormat('dd LLL yyyy') }}</strong>
+      {{ t('messages.show_item.to') }}
+      <strong>{{ object.availableUntil.toFormat('dd LLL yyyy') }}</strong>
+
+      @elseif(object.type == 0 && object.availableFrom)
+      {{ t('messages.show_item.available_fromdon') }}
+      <strong>{{ object.availableFrom.toFormat('dd LLL yyyy') }}</strong>
       @end
     </h3>
+
     <p class="description">
       {{ object.description }}
     </p>
 
     {{-- Logique de réservation --}}
+    @if(auth.isAuthenticated)
+    <button type="button" class="reservButton" onclick="document.getElementById('reserve-modal').showModal()">
+      {{ t('messages.show_item.reserve') }}
+    </button>
 
-      @if(auth.isAuthenticated)
-        {{-- Formulaire réel pour traiter la réservation en base de données --}}
-        <form action="{{ route('donation_objects.reserve', { id: object.id }) }}" method="POST">
-          {{ csrfField() }}
-          <button type="submit" class="reservButton">Je réserve</button>
-        </form>
-      @else
-        <a href="{{ route('auth.login.show') }}" class="reservButton">Connectez-vous pour réserver</a>
-      @end
+    <dialog id="reserve-modal" class="modal-cloud">
+      <form action="{{ route('donation_objects.reserve', { id: object.id }) }}" method="POST">
+        {{ csrfField() }}
+        <h3>{{ t('messages.show_item.message_to_reserve') }}</h3>
+        <textarea name="user_message" placeholder="{{ t('messages.show_item.confirm_placolder') }}" rows="4"></textarea>
+
+        <div class="modal-actions">
+          <button type="submit" class="confirm-btn">{{ t('messages.show_item.confirm_reserve') }}</button>
+          <button type="button" onclick="this.closest('dialog').close()" class="cancel-btn">{{ t('messages.edit_item.cancel') }}</button>
+        </div>
+      </form>
+    </dialog>
+    @else
+    <a href="{{ route('auth.login.show') }}" class="reservButton">
+      {{ t('messages.show_item.login_to_reserve') }}
+    </a>
+    @end
+
+    <style>
+
+    </style>
 
   </div>
 </main>
 
+  @include('partials/flash')
 @include('partials/footer')

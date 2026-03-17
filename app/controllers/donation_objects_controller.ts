@@ -10,7 +10,9 @@ import sharp from 'sharp'
 import fs from 'node:fs/promises'
 import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
+import { Message } from '@adonisjs/mail/types'
 import { DateTime } from 'luxon'
+import DonationPolicy from '#policies/donation_policy'
 
 export default class DonationObjectsController {
   /**
@@ -21,7 +23,10 @@ export default class DonationObjectsController {
     const filterCategorie = request.input('filter_categorie')
 
     // On ajoute direct le filtre sur le status 1 ici
-    let query = DonationObject.query().where('status', 1).orderBy('created_at', 'desc')
+    let query = DonationObject.query()
+      .where('status', 1)
+      .orderBy('urgent', 'desc')
+      .orderBy('created_at', 'desc')
 
     if (filterType === '0') {
       query = query.where('type', false)
@@ -65,25 +70,18 @@ export default class DonationObjectsController {
   async store({ request, response, auth }: HttpContext) {
     if (!auth.user) return response.unauthorized('Vous devez être connecté.')
 
-    // 1. Validation des données
     const payload = await request.validateUsing(createDonationObjectValidator)
 
     let fileName: string | null = null
-
-    // 2. Traitement de l'image avec Sharp
-    if (payload.image) {
+    if (payload.image && payload.image.tmpPath) {
       fileName = `${cuid()}.webp`
       const uploadPath = app.makePath('public/uploads/items', fileName)
-
-      if (payload.image.tmpPath) {
-        await sharp(payload.image.tmpPath)
-          .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-          .webp({ quality: 75 }) // Compression WebP optimisée
-          .toFile(uploadPath)
-      }
+      await sharp(payload.image.tmpPath)
+        .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 75 })
+        .toFile(uploadPath)
     }
 
-    // 3. Création en base de données
     const object = await DonationObject.create({
       userId: auth.user.id,
       name: payload.name,
@@ -92,11 +90,12 @@ export default class DonationObjectsController {
       categorie: payload.categorie,
       imagePath: fileName,
       status: 1,
+      urgent: !!payload.IsUrgent,
       availableFrom: payload.available_from ? DateTime.fromJSDate(payload.available_from) : null,
       availableUntil: payload.available_until ? DateTime.fromJSDate(payload.available_until) : null,
     })
 
-    return response.redirect().toPath(`/item/${object.id}`)
+    return response.redirect().toRoute('donation_objects.show', { id: object.id })
   }
 
   /**
@@ -111,27 +110,28 @@ export default class DonationObjectsController {
   /**
    * Formulaire d'édition (vérification propriétaire)
    */
-  async edit({ params, view, auth, response }: HttpContext) {
-    const user = auth.user!
-    const object = await DonationObject.findOrFail(params.id)
+async edit({ params, view, bouncer }: HttpContext) {
+  const object = await DonationObject.findOrFail(params.id)
 
-    if (object.userId !== user.id) {
-      return response.redirect().toRoute('donation_objects.index')
-    }
+  // Vérifie si l'utilisateur a le droit d'éditer selon la Policy
+  await bouncer.with(DonationPolicy).authorize('edit', object)
 
-    return view.render('pages/edit-object', { object })
-  }
+  return view.render('pages/edit-object', { object })
+}
 
   /**
    * Mise à jour de l'objet (Suppression ancienne image + WebP)
    */
-  async update({ params, request, response }: HttpContext) {
+  async update({ params, request, response, bouncer }: HttpContext) {
     const payload = await request.validateUsing(updateDonationObjectValidator)
     const object = await DonationObject.findOrFail(params.id)
+
+    await bouncer.with(DonationPolicy).authorize('edit', object)
 
     const updateData: any = {
       name: payload.name,
       description: payload.description,
+      urgent: !!payload.IsUrgent,
       type: payload.type === '1',
       categorie: payload.categorie,
       availableFrom: payload.available_from ? DateTime.fromJSDate(payload.available_from) : null,
@@ -142,15 +142,6 @@ export default class DonationObjectsController {
     if (payload.image) {
       const fileName = `${cuid()}.webp`
       const uploadPath = app.makePath('public/uploads/items', fileName)
-
-      // Supprimer l'ancienne image physiquement du disque
-      if (object.imagePath) {
-        try {
-          await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
-        } catch (e) {
-          // On ignore si le fichier n'existait pas déjà
-        }
-      }
 
       // Compression de la nouvelle image
       if (payload.image.tmpPath) {
@@ -172,41 +163,64 @@ export default class DonationObjectsController {
   /**
    * Suppression de l'objet et de son image
    */
-  async destroy({ params, response }: HttpContext) {
-    const object = await DonationObject.findOrFail(params.id)
+  async destroy({ params, response, bouncer }: HttpContext) {
+  const object = await DonationObject.findOrFail(params.id)
 
-    // Nettoyage du fichier image sur le serveur
-    if (object.imagePath) {
-      try {
-        await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
-      } catch (e) {
-        // Erreur ignorée
-      }
-    }
+  // On vérifie le droit de suppression
+  await bouncer.with(DonationPolicy).authorize('delete', object)
 
-    await object.delete()
-    return response.redirect().toPath('/account')
+  if (object.imagePath) {
+    try {
+      await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
+    } catch (e) {}
   }
 
-  async reserve({ params, auth, response, session }: HttpContext) {
-    try {
-      // 1. On récupère l'objet
-      const item = await DonationObject.query().where('id', params.id).preload('user').firstOrFail()
+  await object.delete()
+  return response.redirect().toPath('/account')
+}
 
-      // 2. Sécurité : On vérifie s'il n'est pas déjà réservé (status 2)
+  async reserve({ params, auth, response, session, request, bouncer }: HttpContext) {
+    try {
+      const user = auth.user!
+      await user.refresh()
+
+
+      const userMessage = request.input('user_message', 'Aucun message particulier.')
+
+      const item = await DonationObject.query()
+        .where('id', params.id)
+        .preload('user')
+        .firstOrFail()
+
+      await bouncer.with(DonationPolicy).authorize('reserve', item)
+
       if (item.status === 2) {
-        session.flash('error', 'Cet objet est déjà en cours de réservation.')
+        session.flash('error', 'Cet objet est déjà réservé.')
         return response.redirect().back()
       }
 
+
       // 3. Envoi du mail (ton code actuel)
 
-      // 4. MAJ du status à 2 et sauvegarde en DB
       item.status = 2
+      item.reservedBy = user.id
       await item.save()
 
-      console.log('Email envoyé et status mis à jour à 2.')
-      session.flash('success', "Demande envoyée ! L'objet est maintenant réservé.")
+      // ENVOI DU MAIL
+      await mail.send((message: Message) => {
+        message
+          .to(item.user.email)
+          .from('dami.scoot3@gmail.com')
+          .subject(`Demande de réservation : ${item.name}`)
+          .htmlView('emails/reservation', {
+            item: item.toJSON(),
+            requester: user.toJSON(),
+            customMessage: userMessage,
+          })
+      })
+
+
+      session.flash('success', 'Demande envoyée ! Retrouve-la dans ton historique.')
     } catch (error) {
       console.error(error)
       session.flash('error', "L'action a échoué.")
@@ -215,21 +229,19 @@ export default class DonationObjectsController {
     return response.redirect().back()
   }
 
-
   async republish({ params, auth, response, session }: HttpContext) {
-  const user = auth.user!
-  
-  // On récupère l'objet en vérifiant qu'il appartient bien au user
-  const object = await DonationObject.query()
-    .where('id', params.id)
-    .where('userId', user.id)
-    .firstOrFail()
+    const user = auth.user!
 
-  object.status = 1 // On repasse en "Disponible"
-  await object.save()
+    const object = await DonationObject.query()
+      .where('id', params.id)
+      .where('userId', user.id)
+      .firstOrFail()
 
-  session.flash('success', 'L\'objet est de nouveau disponible !')
-  return response.redirect().back()
-}
+    object.status = 1
+    object.reservedBy = null
+    await object.save()
 
+    session.flash('success', "L'objet est de nouveau disponible !")
+    return response.redirect().back()
+  }
 }
