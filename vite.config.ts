@@ -1,23 +1,18 @@
 import { defineConfig, loadEnv } from 'vite'
 import adonisjs from '@adonisjs/vite/client'
 
-export default defineConfig({
-  const env = loadEnv(mode, process.cwd(), "");
-  plugins: [
-    adonisjs({
-      /**
-       * Entrypoints of your application. Each entrypoint will
-       * result in a separate bundle.
-       */
-      entrypoints: ['resources/css/app.css', 'resources/js/app.js'],
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "")
 
-      /**
-       * Paths to watch and reload the browser on file change
-       */
-      reload: ['resources/views/**/*.edge'],
-    }),
-  ],
-  server: {
-    allowedHosts: env.ALLOWED_HOST,
-  },
+  return {
+    plugins: [
+      adonisjs({
+        entrypoints: ['resources/css/app.css', 'resources/js/app.js'],
+        reload: ['resources/views/**/*.edge'],
+      }),
+    ],
+    server: {
+      allowedHosts: env.ALLOWED_HOST,
+    },
+  }
 })
