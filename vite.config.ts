@@ -20,7 +20,7 @@ export default defineConfig({
     }),
   ],
   server: {
-    allowedHosts: process.env.ALLOWED_HOST,
+    allowedHosts: process.env.ALLOWED_HOST
       ? [env.ALLOWED_HOST]
       : ['jdjp.etml.net'],
   },
