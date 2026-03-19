@@ -1,7 +1,8 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import adonisjs from '@adonisjs/vite/client'
 
 export default defineConfig({
+  const env = loadEnv(mode, process.cwd(), "");
   plugins: [
     adonisjs({
       /**
@@ -17,6 +18,6 @@ export default defineConfig({
     }),
   ],
   server: {
-    allowedHosts: ['jdjp.etml.net'],
+    allowedHosts: env.ALLOWED_HOST,
   },
 })
