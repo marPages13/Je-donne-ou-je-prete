@@ -177,7 +177,7 @@ async edit({ params, view, bouncer }: HttpContext) {
   return response.redirect().toPath('/account')
 }
 
-  async reserve({ params, auth, response, session, request, bouncer }: HttpContext) {
+  async reserve({ params, auth, response, session, bouncer }: HttpContext) {
     try {
       const user = auth.user!
       await user.refresh()
