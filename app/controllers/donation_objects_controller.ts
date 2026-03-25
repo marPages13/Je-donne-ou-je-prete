@@ -9,8 +9,6 @@ import { cuid } from '@adonisjs/core/helpers'
 import sharp from 'sharp'
 import fs from 'node:fs/promises'
 import db from '@adonisjs/lucid/services/db'
-import mail from '@adonisjs/mail/services/main'
-import { Message } from '@adonisjs/mail/types'
 import { DateTime } from 'luxon'
 import DonationPolicy from '#policies/donation_policy'
 
@@ -179,13 +177,11 @@ async edit({ params, view, bouncer }: HttpContext) {
   return response.redirect().toPath('/account')
 }
 
-  async reserve({ params, auth, response, session, request, bouncer }: HttpContext) {
+  async reserve({ params, auth, response, session, bouncer }: HttpContext) {
     try {
       const user = auth.user!
       await user.refresh()
 
-
-      const userMessage = request.input('user_message', 'Aucun message particulier.')
 
       const item = await DonationObject.query()
         .where('id', params.id)
