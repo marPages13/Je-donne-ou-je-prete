@@ -9,6 +9,7 @@
   "add_item": {
     "title": "Proposer un nouvel objet",
     "image_label": "Image de l'objet",
+    "image_preview_alt": "Aperçu de l'image",
     "name_label": "Nom de l'objet :",
     "name_placeholder": "Ex: Étagère",
     "desc_label": "Description détaillée :",
@@ -19,6 +20,11 @@
     "status_select": "-- Sélectionner le statut --",
     "status_give": "Donner",
     "status_lend": "Prêter",
+    "mode_label": "Mode :",
+    "mode_select": "-- Sélectionner un mode --",
+    "mode_donation": "Don / Prêt",
+    "mode_search": "Recherche",
+    "urgent_label": "Urgent ?",
     "loan_details": "Détails",
     "from": "Disponible à partir de :",
     "until": "Jusqu'à (date de fin) :",
@@ -39,13 +45,16 @@
   "common": {
     "give": "À donner",
     "lend": "À prêter",
+    "search": "Recherche",
     "all": "Tous",
     "all_categories": "Toutes les catégories",
     "urgent": "URGENT"
   },
   "home": {
     "filter_type": "Filtrer par type",
-    "filter_cat": "Filtrer par catégorie"
+    "filter_cat": "Filtrer par catégorie",
+    "mode_search": "Mode recherche",
+    "mode_donation": "Mode don / prêt"
   },
   "edit_item": {
     "title": "Éditer l'objet :",
@@ -57,11 +66,16 @@
     "published_by": "Publié par :",
     "available_from": "Disponible du",
     "available_fromdon": "Disponible depuis le",
+    "needed_from": "Besoin du",
     "to": "au",
     "reserve": "Je réserve",
+    "offer_help": "Je propose un don",
     "login_to_reserve": "Connectez-vous pour réserver",
+    "login_to_offer": "Connectez-vous pour proposer un don",
     "message_to_reserve": "Envoyer un message au donneur ?",
+    "message_to_offer": "Envoyer un message au demandeur ?",
     "confirm_reserve": "Confirmer la réservation",
+    "confirm_offer": "Confirmer l'offre",
     "confirm_placolder": "Laissez vide pour ne rien ajouter."
   },
   "account": {
@@ -85,6 +99,8 @@
   },
   "nav": {
     "add": "Ajouter",
-    "account": "Compte"
+    "account": "Compte",
+    "search": "Chercher",
+    "don": "Don/Prêt"
   }
 }

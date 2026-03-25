@@ -12,12 +12,16 @@ export default class extends BaseSchema {
 
       table.integer('status').notNullable().defaultTo(1)
       table.string('categorie').defaultTo('aucune')
+      table.string('image_path').nullable()
 
       // Temps de réservation en minutes (nullable au niveau DB)
       // Dans ta migration up()
       table.timestamp('needed_from').nullable()
       table.timestamp('needed_until').nullable()
       table.boolean('urgent').defaultTo('false')
+
+      // Celui qui a proposé le don (le donateur)
+      table.integer('gifted_by').unsigned().nullable().references('id').inTable('users').onDelete('SET NULL')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

@@ -9,33 +9,39 @@ import { cuid } from '@adonisjs/core/helpers'
 import sharp from 'sharp'
 import fs from 'node:fs/promises'
 import db from '@adonisjs/lucid/services/db'
-import mail from '@adonisjs/mail/services/main'
-import { Message } from '@adonisjs/mail/types'
 import { DateTime } from 'luxon'
 import DonationPolicy from '#policies/donation_policy'
+import { sendWithPool } from '#services/mail_pool'
 
 export default class DonationObjectsController {
   /**
    * Liste des objets avec filtres (Home)
    */
-  async index({ request, view }: HttpContext) {
+  async index({ request, view, auth }: HttpContext) {
     const filterType = request.input('filter_type')
     const filterCategorie = request.input('filter_categorie')
+    const currentUser = auth.user
+    const isExternalUser = !!currentUser?.extainre
 
     // On ajoute direct le filtre sur le status 1 ici
     let query = DonationObject.query()
-      .where('status', 1)
-      .orderBy('urgent', 'desc')
-      .orderBy('created_at', 'desc')
+      .where('donation_objects.status', 1)
+      .orderBy('donation_objects.urgent', 'desc')
+
+    if (isExternalUser) {
+      query = query.whereRaw('donation_objects.created_at <= DATE_SUB(NOW(), INTERVAL 3 MONTH)')
+    }
+
+    query = query.orderBy('donation_objects.created_at', 'desc')
 
     if (filterType === '0') {
-      query = query.where('type', false)
+      query = query.where('donation_objects.type', false)
     } else if (filterType === '1') {
-      query = query.where('type', true)
+      query = query.where('donation_objects.type', true)
     }
 
     if (filterCategorie && filterCategorie !== '') {
-      query = query.where('categorie', filterCategorie)
+      query = query.where('donation_objects.categorie', filterCategorie)
     }
 
     const objects = await query
@@ -110,87 +116,42 @@ export default class DonationObjectsController {
   /**
    * Formulaire d'édition (vérification propriétaire)
    */
-async edit({ params, view, bouncer }: HttpContext) {
-  const object = await DonationObject.findOrFail(params.id)
-
-  // Vérifie si l'utilisateur a le droit d'éditer selon la Policy
-  await bouncer.with(DonationPolicy).authorize('edit', object)
-
-  return view.render('pages/edit-object', { object })
-}
-
-  /**
-   * Mise à jour de l'objet (Suppression ancienne image + WebP)
-   */
-  async update({ params, request, response, bouncer }: HttpContext) {
-    const payload = await request.validateUsing(updateDonationObjectValidator)
+  async edit({ params, view, bouncer }: HttpContext) {
     const object = await DonationObject.findOrFail(params.id)
 
+    // Vérifie si l'utilisateur a le droit d'éditer selon la Policy
     await bouncer.with(DonationPolicy).authorize('edit', object)
 
-    const updateData: any = {
-      name: payload.name,
-      description: payload.description,
-      urgent: !!payload.IsUrgent,
-      type: payload.type === '1',
-      categorie: payload.categorie,
-      availableFrom: payload.available_from ? DateTime.fromJSDate(payload.available_from) : null,
-      availableUntil: payload.available_until ? DateTime.fromJSDate(payload.available_until) : null,
-    }
-
-    // Si une nouvelle image est envoyée
-    if (payload.image) {
-      const fileName = `${cuid()}.webp`
-      const uploadPath = app.makePath('public/uploads/items', fileName)
-
-      // Compression de la nouvelle image
-      if (payload.image.tmpPath) {
-        await sharp(payload.image.tmpPath)
-          .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-          .webp({ quality: 75 })
-          .toFile(uploadPath)
-
-        updateData.imagePath = fileName
-      }
-    }
-
-    object.merge(updateData)
-    await object.save()
-
-    return response.redirect(`/item/${object.id}`)
+    return view.render('pages/edit-object', { object })
   }
 
   /**
    * Suppression de l'objet et de son image
    */
   async destroy({ params, response, bouncer }: HttpContext) {
-  const object = await DonationObject.findOrFail(params.id)
+    const object = await DonationObject.findOrFail(params.id)
 
-  // On vérifie le droit de suppression
-  await bouncer.with(DonationPolicy).authorize('delete', object)
+    // On vérifie le droit de suppression
+    await bouncer.with(DonationPolicy).authorize('delete', object)
 
-  if (object.imagePath) {
-    try {
-      await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
-    } catch (e) {}
+    if (object.imagePath) {
+      try {
+        await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
+      } catch (e) {}
+    }
+
+    await object.delete()
+    return response.redirect().toPath('/account')
   }
-
-  await object.delete()
-  return response.redirect().toPath('/account')
-}
 
   async reserve({ params, auth, response, session, request, bouncer }: HttpContext) {
     try {
       const user = auth.user!
       await user.refresh()
 
-
       const userMessage = request.input('user_message', 'Aucun message particulier.')
 
-      const item = await DonationObject.query()
-        .where('id', params.id)
-        .preload('user')
-        .firstOrFail()
+      const item = await DonationObject.query().where('id', params.id).preload('user').firstOrFail()
 
       await bouncer.with(DonationPolicy).authorize('reserve', item)
 
@@ -199,26 +160,29 @@ async edit({ params, view, bouncer }: HttpContext) {
         return response.redirect().back()
       }
 
-
       // 3. Envoi du mail (ton code actuel)
 
       item.status = 2
       item.reservedBy = user.id
       await item.save()
 
-      // // ENVOI DU MAIL
-      // await mail.send((message: Message) => {
-      //   message
-      //     .to(item.user.email)
-      //     .from('dami.scoot3@gmail.com')
-      //     .subject(`Demande de réservation : ${item.name}`)
-      //     .htmlView('emails/reservation', {
-      //       item: item.toJSON(),
-      //       requester: user.toJSON(),
-      //       customMessage: userMessage,
-      //     })
-      // })
+      const ownerEmail = item.user.email
+      if (!ownerEmail) {
+        session.flash('error', "Le propriétaire n'a pas d'email configuré.")
+        return response.redirect().back()
+      }
 
+      await sendWithPool((message) => {
+        message
+          .to(ownerEmail)
+          .from('dami.scoot3@gmail.com')
+          .subject(`Demande de réservation : ${item.name}`)
+          .htmlView('emails/reservation', {
+            item: item.toJSON(),
+            requester: user.toJSON(),
+            customMessage: userMessage,
+          })
+      })
 
       session.flash('success', 'Demande envoyée ! Retrouve-la dans ton historique.')
     } catch (error) {

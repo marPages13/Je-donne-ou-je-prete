@@ -8,6 +8,7 @@
   "add_item": {
     "title": "Propose a new item",
     "image_label": "Item Image",
+    "image_preview_alt": "Image preview",
     "name_label": "Item Name:",
     "name_placeholder": "Ex: Shelf",
     "desc_label": "Detailed Description:",
@@ -18,6 +19,11 @@
     "status_select": "-- Select status --",
     "status_give": "Give",
     "status_lend": "Lend",
+    "mode_label": "Mode:",
+    "mode_select": "-- Select a mode --",
+    "mode_donation": "Give / Lend",
+    "mode_search": "Search",
+    "urgent_label": "Urgent?",
     "loan_details": "Details",
     "from": "Available from:",
     "until": "Until (end date):",
@@ -38,13 +44,16 @@
   "common": {
     "give": "To give",
     "lend": "To lend",
+    "search": "Search",
     "all": "All",
     "all_categories": "All categories",
     "urgent": "URGENT"
   },
   "home": {
     "filter_type": "Filter by type",
-    "filter_cat": "Filter by category"
+    "filter_cat": "Filter by category",
+    "mode_search": "Search mode",
+    "mode_donation": "Give / Lend mode"
   },
   "edit_item": {
     "title": "Edit Item:",
@@ -56,11 +65,16 @@
     "published_by": "Published by:",
     "available_from": "Available from",
     "available_fromdon": "Available since",
+    "needed_from": "Needed from",
     "to": "to",
     "reserve": "Reserve now",
+    "offer_help": "I want to help",
     "login_to_reserve": "Log in to reserve",
+    "login_to_offer": "Log in to offer help",
     "message_to_reserve": "Send a message to the donor ?",
+    "message_to_offer": "Send a message to the requester ?",
     "confirm_reserve": "Confirm the reservation",
+    "confirm_offer": "Confirm offer",
     "confirm_placolder": "Leave blank to avoid adding anything."
   },
   "account": {
@@ -84,6 +98,8 @@
   },
   "nav": {
     "add": "Add",
-    "account": "Account"
+    "account": "Account",
+    "search": "Search",
+    "don": "Give/Lend"
   }
 }
