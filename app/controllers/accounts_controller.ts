@@ -1,5 +1,4 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Post from '#models/donation-object'
 import DonationObject from '#models/donation-object'
 
 export default class AccountsController {

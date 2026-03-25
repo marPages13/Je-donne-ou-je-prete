@@ -160,8 +160,6 @@ export default class DonationObjectsController {
         return response.redirect().back()
       }
 
-      // 3. Envoi du mail (ton code actuel)
-
       item.status = 2
       item.reservedBy = user.id
       await item.save()

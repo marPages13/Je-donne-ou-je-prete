@@ -1,5 +1,8 @@
+
 import { defineConfig } from 'vite'
 import adonisjs from '@adonisjs/vite/client'
+
+console.log('ALLOWED_HOST:', process.env.ALLOWED_HOST)
 
 export default defineConfig({
   plugins: [
@@ -17,6 +20,8 @@ export default defineConfig({
     }),
   ],
   server: {
-    allowedHosts: ['jdjp.etml.net'],
+    allowedHosts: process.env.ALLOWED_HOST
+      ? [process.env.ALLOWED_HOST]
+      : ['jdjp.etml.net'],
   },
 })
