@@ -90,4 +90,12 @@ export default await Env.create(new URL('../', import.meta.url), {
   SMTP10_PORT: Env.schema.number.optional(),
   SMTP10_USERNAME: Env.schema.string.optional(),
   SMTP10_PASSWORD: Env.schema.string.optional(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring SSO bridge
+  |----------------------------------------------------------
+  */
+  API_KEY: Env.schema.string.optional(),
+  SSO_PORTAL: Env.schema.string.optional(),
 })

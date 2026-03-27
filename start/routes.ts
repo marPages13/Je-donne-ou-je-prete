@@ -10,11 +10,16 @@ import { middleware } from './kernel.js'
 import AuthController from '#controllers/auth_controller'
 import AccountsController from '#controllers/accounts_controller'
 import ChercheObjectsController from '#controllers/cherche_objects_controller'
+import SsoTestController from '#controllers/sso_test_controller'
 
 // --- Public routes ---
 router.get('/login', [AuthController, 'login']).as('login')
 router.post('/login', [AuthController, 'authenticate']).as('autenticate')
 router.get('/', [AuthController, 'login']).as('login0')
+router.get('/sso/test', [SsoTestController, 'status']).as('sso.test.status')
+router.get('/sso/login', [SsoTestController, 'loginRedirect']).as('sso.test.login')
+router.get('/sso/callback', [SsoTestController, 'callback']).as('sso.test.callback')
+router.get('/sso/logout', [SsoTestController, 'logout']).as('sso.test.logout')
 // --- Protected routes ---
 router.group(() => {
   
