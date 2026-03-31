@@ -13,25 +13,43 @@ type SsoResult = {
 }
 
 export default class SsoTestController {
+  // Utilitaires pour DRY
+  private getPortalUrl() {
+    return (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
+  }
+  private getAppUrl() {
+    return (env.get('APP_URL') || 'http://127.0.0.1:3333').replace(/\/$/, '')
+  }
+
+  /**
+   * Route de test SSO : GET /sso/test
+   * Affiche un état simple et les liens SSO utiles.
+   */
+  public async status({ response }: HttpContext) {
+    const apiKey = env.get('API_KEY')
+    const appUrl = this.getAppUrl()
+    return response.ok({
+      status: 'ok',
+      apiKeyPresent: !!apiKey,
+      message: apiKey ? 'API_KEY détectée.' : 'API_KEY manquante dans .env',
+      links: {
+        login: `${appUrl}/sso/login`,
+        callback: `${appUrl}/sso/callback?correlationId=XXX`,
+        logout: `${appUrl}/sso/logout`
+      }
+    })
+  }
+
   /**
    * PHASE 1 : Redirection vers le portail SSO
    */
   public async loginRedirect({ response }: HttpContext) {
     const bridge = createBridgeFromEnv() as any
     const cid = await bridge.generateCorrelationId()
-
-    console.log('--- [SSO DÉPART] ---')
     console.log('ID généré:', cid)
-
-    const portal = (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
-    
-    /**
-     * Pour parer aux problèmes de cookies SameSite en HTTP/Localhost,
-     * on passe le CID dans l'URL de retour.
-     */
-    const callbackUrl = `http://127.0.0.1:3333/sso/callback?correlationId=${cid}`
+    const portal = this.getPortalUrl()
+    const callbackUrl = `${this.getAppUrl()}/sso/callback?correlationId=${cid}`
     const finalUrl = `${portal}/redirect?correlationId=${cid}&redirectUri=${encodeURIComponent(callbackUrl)}`
-
     return response.redirect(finalUrl)
   }
 
@@ -40,42 +58,28 @@ export default class SsoTestController {
    */
   public async callback({ request, session, response, auth }: HttpContext) {
     console.log('--- [SSO RETOUR - FINAL FIX] ---')
-    
     const cid = request.input('correlationId')
     if (!cid) return response.badRequest('CID manquant')
-
     try {
       const apiKey = env.get('API_KEY')
-      
-      // ON RECONSTRUIT L'URL EXACTE DU PHP
-      // https://apps.pm2etml.ch/auth/bridge/check
-      const portal = (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
-      
-      // Si ton SSO_PORTAL ne finit pas par /auth, on l'ajoute
+      const portal = this.getPortalUrl()
       const baseUrl = portal.endsWith('/auth') ? portal : `${portal}/auth`
       const bridgeUrl = `${baseUrl}/bridge/check?token=${apiKey}&correlationId=${cid}`
-
       console.log('Tentative de GET sur:', bridgeUrl)
-
       const apiResponse = await fetch(bridgeUrl, {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
       })
-
       const ssoResult = await apiResponse.json() as any
       console.log('Résultat API:', ssoResult)
-
       if (ssoResult.error || !ssoResult.email) {
         session.flash({ error: `Erreur : ${ssoResult.error || 'User inconnu'}` })
         return response.redirect('/login')
       }
-
       // Connexion
       const user = await this.findOrCreateSsoUser(ssoResult)
       await auth.use('web').login(user)
-      
       return response.redirect('/home')
-
     } catch (error) {
       console.error('Erreur technique:', error)
       return response.internalServerError(`Erreur : ${error.message}`)
@@ -87,10 +91,9 @@ export default class SsoTestController {
    */
   public async logout({ auth, response }: HttpContext) {
     await auth.use('web').logout()
-    
-    const portal = (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
-    const postLogoutUrl = encodeURIComponent('http://127.0.0.1:3333/')
-    
+    const portal = this.getPortalUrl()
+    const appUrl = this.getAppUrl()
+    const postLogoutUrl = encodeURIComponent(appUrl.endsWith('/') ? appUrl : appUrl + '/')
     return response.redirect(`${portal}/logout?redirectUri=${postLogoutUrl}`)
   }
 
@@ -118,7 +121,7 @@ export default class SsoTestController {
       Username: username,
       email,
       password,
-      extainre: false, // Vérifie si ce n'est pas 'externe' dans ta migration
+      extainre: false,
       isadmin: false,
     })
   }
