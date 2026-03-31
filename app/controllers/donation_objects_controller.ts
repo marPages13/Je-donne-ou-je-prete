@@ -206,4 +206,47 @@ export default class DonationObjectsController {
     session.flash('success', "L'objet est de nouveau disponible !")
     return response.redirect().back()
   }
+
+  /**
+   * Met à jour un objet existant (avec gestion d'image)
+   */
+  async update({ params, request, response, auth, bouncer }: HttpContext) {
+    if (!auth.user) return response.unauthorized('Vous devez être connecté.')
+
+    const object = await DonationObject.findOrFail(params.id)
+    await bouncer.with(DonationPolicy).authorize('edit', object)
+
+    const payload = await request.validateUsing(updateDonationObjectValidator)
+
+    // Gestion de l'image
+    if (payload.image && payload.image.tmpPath) {
+      // Supprimer l'ancienne image si elle existe
+      if (object.imagePath) {
+        try {
+          await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
+        } catch (e) {}
+      }
+      // Enregistrer la nouvelle image
+      const fileName = `${cuid()}.webp`
+      const uploadPath = app.makePath('public/uploads/items', fileName)
+      await sharp(payload.image.tmpPath)
+        .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 75 })
+        .toFile(uploadPath)
+      object.imagePath = fileName
+    }
+
+    object.name = payload.name
+    object.description = payload.description ?? null
+    if (payload.type !== undefined) {
+      object.type = payload.type === '1'
+    }
+    object.categorie = payload.categorie
+    object.urgent = !!payload.IsUrgent
+    object.availableFrom = payload.available_from ? DateTime.fromJSDate(payload.available_from) : null
+    object.availableUntil = payload.available_until ? DateTime.fromJSDate(payload.available_until) : null
+
+    await object.save()
+    return response.redirect().toRoute('donation_objects.show', { id: object.id })
+  }
 }

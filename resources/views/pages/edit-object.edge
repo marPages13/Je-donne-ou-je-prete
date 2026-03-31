@@ -30,8 +30,8 @@
   @endif
     {{ csrfField() }}
 
-    {{-- Pour Adonis, on utilise l'ID de route POST mais on simule le PUT ou PATCH --}}
-    <input type="hidden" name="_method" value="POST"> {{-- Ou PATCH selon ton controller --}}
+    {{-- Pour Adonis, on utilise l'ID de route POST sans _method --}}
+    <!-- Champ _method supprimé, tout passe en POST -->
 
     {{-- Section Image --}}
     <div>
@@ -74,6 +74,7 @@
 
     <div class="field-group">
     <label for="IsUrgent">Urgent ?</label>
+    <input type="hidden" name="IsUrgent" value="0">
     <input type="checkbox" id="IsUrgent" name="IsUrgent" value="1" {{ object.urgent ? 'checked' : '' }}>
     </div>
 
@@ -173,54 +174,51 @@
   const typeSelector = document.getElementById('type');
   const availabilitySection = document.getElementById('availability_section');
   const untilField = document.getElementById('until_field');
-  const editForm = document.getElementById('editForm');
-
   const imageSelector = document.getElementById('image');
   const imageDisplay = document.getElementById('imageDisplay');
 
-  function toggleMode() {
+  function updateDisplay() {
     const mode = modeSelector.value;
-    
+    const type = typeSelector.value;
+
     if (mode === 'donation') {
       typeSection.style.display = 'block';
-      // Déclenche aussi la fonction toggleDates
-      toggleDates();
-      editForm.action = '{{ route("donation_objects.update", { id: object.id }) }}';
+      typeSelector.disabled = false;
+      
+      if (type === '0') { // Don
+        availabilitySection.style.display = 'block';
+        untilField.style.display = 'none';
+      } else if (type === '1') { // Prêt
+        availabilitySection.style.display = 'block';
+        untilField.style.display = 'block';
+      } else {
+        availabilitySection.style.display = 'none';
+      }
     } else if (mode === 'search') {
       typeSection.style.display = 'none';
-      typeSelector.value = '';
-      availabilitySection.style.display = 'block';
-      editForm.action = '{{ route("cherche_objects.update", { id: object.id }) }}';
-    } else {
-      typeSection.style.display = 'none';
-      availabilitySection.style.display = 'none';
-    }
-  }
-
-  function toggleDates() {
-    const val = typeSelector.value;
-    if (val === '0') {
-      availabilitySection.style.display = 'block';
-      untilField.style.display = 'none';
-    } else if (val === '1') {
+      typeSelector.disabled = true;
+      // En mode recherche, on a généralement besoin des deux dates (début/fin du besoin)
       availabilitySection.style.display = 'block';
       untilField.style.display = 'block';
     } else {
+      typeSection.style.display = 'none';
       availabilitySection.style.display = 'none';
     }
   }
 
-  modeSelector.addEventListener('change', toggleMode);
-  typeSelector.addEventListener('change', toggleDates);
-  window.addEventListener('DOMContentLoaded', function() {
-    toggleMode();
-  });
+  modeSelector.addEventListener('change', updateDisplay);
+  typeSelector.addEventListener('change', updateDisplay);
 
+  // Initialisation au chargement
+  window.addEventListener('DOMContentLoaded', updateDisplay);
+
+  // Aperçu de l'image
   imageSelector.addEventListener('change', function (event) {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = function (e) {
         imageDisplay.src = e.target.result;
+        imageDisplay.classList.remove('CACHER');
         imageDisplay.style.display = 'block';
       };
       reader.readAsDataURL(event.target.files[0]);

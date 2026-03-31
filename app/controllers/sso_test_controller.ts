@@ -20,9 +20,6 @@ export default class SsoTestController {
     const bridge = createBridgeFromEnv() as any
     const cid = await bridge.generateCorrelationId()
 
-    console.log('--- [SSO DÉPART] ---')
-    console.log('ID généré:', cid)
-
     const portal = (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
     
     /**
@@ -39,7 +36,6 @@ export default class SsoTestController {
    * PHASE 2 : Retour du portail SSO & Validation
    */
   public async callback({ request, session, response, auth }: HttpContext) {
-    console.log('--- [SSO RETOUR - FINAL FIX] ---')
     
     const cid = request.input('correlationId')
     if (!cid) return response.badRequest('CID manquant')
@@ -55,15 +51,12 @@ export default class SsoTestController {
       const baseUrl = portal.endsWith('/auth') ? portal : `${portal}/auth`
       const bridgeUrl = `${baseUrl}/bridge/check?token=${apiKey}&correlationId=${cid}`
 
-      console.log('Tentative de GET sur:', bridgeUrl)
-
       const apiResponse = await fetch(bridgeUrl, {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
       })
 
       const ssoResult = await apiResponse.json() as any
-      console.log('Résultat API:', ssoResult)
 
       if (ssoResult.error || !ssoResult.email) {
         session.flash({ error: `Erreur : ${ssoResult.error || 'User inconnu'}` })

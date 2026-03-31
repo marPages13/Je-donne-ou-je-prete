@@ -71,7 +71,7 @@
     "mysql2": "^3.15.3",
     "reflect-metadata": "^0.2.2",
     "sharp": "^0.34.5",
-    "sso-bridge": "github:BlackAngelTVdev/SSO-Bridge"
+    "sso-bridge": "github:ETML-INF/SSO-Bridge"
   },
   "hotHook": {
     "boundaries": [
