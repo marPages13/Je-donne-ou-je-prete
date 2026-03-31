@@ -14,7 +14,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * codes. You might want to enable them in production only, but feel
    * free to enable them in development as well.
    */
-  protected renderStatusPages = app.inProduction
+  protected renderStatusPages = true
 
   /**
    * Status pages is a collection of error code range and a callback
@@ -34,6 +34,10 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
+    if (!app.inProduction) {
+      // Log l'erreur en dev
+      console.error('[DEV][ERROR]', error)
+    }
     return super.handle(error, ctx)
   }
 
