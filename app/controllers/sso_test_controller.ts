@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { randomBytes } from 'node:crypto'
 import Hash from '@adonisjs/core/services/hash'
-import ssoBridgePackage from 'sso-bridge'
 import { createBridgeFromEnv } from '#services/sso_bridge_service'
 import env from '#start/env'
 import User from '#models/user'
@@ -9,64 +8,109 @@ import User from '#models/user'
 type SsoResult = {
   email: string
   username: string
-  error: string
+  error?: string
   isSuccess: () => boolean
 }
 
-type SsoHandlers = {
-  loginRedirect: (ctx: HttpContext, customRedirectParams?: Record<string, string>) => Promise<unknown>
-  callback: (ctx: HttpContext) => Promise<SsoResult | unknown>
-  logout: (ctx: HttpContext) => unknown
-}
-
-type SsoAdonisFactory = {
-  createAdonisSSOHandlers: (
-    bridge: unknown,
-    options?: {
-      sessionKey?: string
-      callbackPath?: string
-      afterLogoutPath?: string
-    }
-  ) => SsoHandlers
-}
-
-const { createAdonisSSOHandlers } = ssoBridgePackage as unknown as SsoAdonisFactory
-
 export default class SsoTestController {
-  private normalizeUsername(rawEmail: string) {
-    const localPart = rawEmail.includes('@') ? rawEmail.split('@')[0] : rawEmail
-    const source = localPart.trim().replace(/\./g, '-')
-    const cleaned = source.replace(/[^a-zA-Z0-9_-]/g, '')
-    return (cleaned || 'sso_user').slice(0, 40)
+  /**
+   * PHASE 1 : Redirection vers le portail SSO
+   */
+  public async loginRedirect({ response }: HttpContext) {
+    const bridge = createBridgeFromEnv() as any
+    const cid = await bridge.generateCorrelationId()
+
+    console.log('--- [SSO DÉPART] ---')
+    console.log('ID généré:', cid)
+
+    const portal = (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
+    
+    /**
+     * Pour parer aux problèmes de cookies SameSite en HTTP/Localhost,
+     * on passe le CID dans l'URL de retour.
+     */
+    const callbackUrl = `http://127.0.0.1:3333/sso/callback?correlationId=${cid}`
+    const finalUrl = `${portal}/redirect?correlationId=${cid}&redirectUri=${encodeURIComponent(callbackUrl)}`
+
+    return response.redirect(finalUrl)
   }
 
-  private async makeUniqueUsername(baseUsername: string) {
-    let candidate = baseUsername
-    let suffix = 1
+  /**
+   * PHASE 2 : Retour du portail SSO & Validation
+   */
+  public async callback({ request, session, response, auth }: HttpContext) {
+    console.log('--- [SSO RETOUR - FINAL FIX] ---')
+    
+    const cid = request.input('correlationId')
+    if (!cid) return response.badRequest('CID manquant')
 
-    while (await User.findBy('Username', candidate)) {
-      candidate = `${baseUsername}_${suffix}`.slice(0, 40)
-      suffix += 1
+    try {
+      const apiKey = env.get('API_KEY')
+      
+      // ON RECONSTRUIT L'URL EXACTE DU PHP
+      // https://apps.pm2etml.ch/auth/bridge/check
+      const portal = (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
+      
+      // Si ton SSO_PORTAL ne finit pas par /auth, on l'ajoute
+      const baseUrl = portal.endsWith('/auth') ? portal : `${portal}/auth`
+      const bridgeUrl = `${baseUrl}/bridge/check?token=${apiKey}&correlationId=${cid}`
+
+      console.log('Tentative de GET sur:', bridgeUrl)
+
+      const apiResponse = await fetch(bridgeUrl, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      })
+
+      const ssoResult = await apiResponse.json() as any
+      console.log('Résultat API:', ssoResult)
+
+      if (ssoResult.error || !ssoResult.email) {
+        session.flash({ error: `Erreur : ${ssoResult.error || 'User inconnu'}` })
+        return response.redirect('/login')
+      }
+
+      // Connexion
+      const user = await this.findOrCreateSsoUser(ssoResult)
+      await auth.use('web').login(user)
+      
+      return response.redirect('/home')
+
+    } catch (error) {
+      console.error('Erreur technique:', error)
+      return response.internalServerError(`Erreur : ${error.message}`)
     }
-
-    return candidate
   }
 
+  /**
+   * PHASE 3 : Déconnexion (Locale + Portail)
+   */
+  public async logout({ auth, response }: HttpContext) {
+    await auth.use('web').logout()
+    
+    const portal = (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
+    const postLogoutUrl = encodeURIComponent('http://127.0.0.1:3333/')
+    
+    return response.redirect(`${portal}/logout?redirectUri=${postLogoutUrl}`)
+  }
+
+  /**
+   * LOGIQUE PRIVÉE : Gestion de l'utilisateur en base
+   */
   private async findOrCreateSsoUser(payload: SsoResult) {
     const email = payload.email?.trim().toLowerCase() || null
     const usernameFromSso = payload.username?.trim() || ''
 
+    // 1. Recherche (Email d'abord, puis Username)
     let user = email ? await User.findBy('email', email) : null
-
     if (!user && usernameFromSso) {
       user = await User.findBy('Username', usernameFromSso)
     }
 
-    if (user) {
-      return user
-    }
+    if (user) return user
 
-    const baseUsername = this.normalizeUsername(email || '')
+    // 2. Création si nouveau
+    const baseUsername = this.normalizeUsername(email || usernameFromSso)
     const username = await this.makeUniqueUsername(baseUsername)
     const password = await Hash.make(randomBytes(32).toString('hex'))
 
@@ -74,74 +118,24 @@ export default class SsoTestController {
       Username: username,
       email,
       password,
-      extainre: false,
+      extainre: false, // Vérifie si ce n'est pas 'externe' dans ta migration
       isadmin: false,
     })
   }
 
-  private makeHandlers() {
-    const bridge = createBridgeFromEnv()
-
-    return createAdonisSSOHandlers(bridge, {
-      sessionKey: 'sso_bridge_correlation_id',
-      callbackPath: '/sso/callback',
-      afterLogoutPath: '/sso/test',
-    })
+  private normalizeUsername(rawEmail: string) {
+    const localPart = rawEmail.includes('@') ? rawEmail.split('@')[0] : rawEmail
+    const cleaned = localPart.trim().replace(/\./g, '-').replace(/[^a-zA-Z0-9_-]/g, '')
+    return (cleaned || 'sso_user').slice(0, 40)
   }
 
-  public async status({ response }: HttpContext) {
-    return response.send({
-      package: 'sso-bridge',
-      ok: true,
-      env: {
-        hasApiKey: Boolean(env.get('API_KEY')),
-        ssoPortal: env.get('SSO_PORTAL') || null,
-      },
-      endpoints: {
-        login: '/sso/login',
-        callback: '/sso/callback',
-        logout: '/sso/logout',
-      },
-      message:
-        'Utilise /sso/login pour tester la redirection SSO puis reviens ici pour verifier l etat.',
-    })
-  }
-
-  public async loginRedirect(ctx: HttpContext) {
-    const handlers = this.makeHandlers()
-    return handlers.loginRedirect(ctx, { source: 'adonis-test' })
-  }
-
-  public async callback(ctx: HttpContext) {
-    const handlers = this.makeHandlers()
-    const result = await handlers.callback(ctx)
-
-    if (result && typeof result === 'object' && 'isSuccess' in result) {
-      const ssoResult = result as SsoResult
-
-      if (!ssoResult.isSuccess()) {
-        ctx.session.flash({ error: `Connexion SSO echouee: ${ssoResult.error}` })
-        return ctx.response.redirect('/login')
-      }
-
-      const user = await this.findOrCreateSsoUser(ssoResult)
-      await ctx.auth.use('web').login(user)
-
-      ctx.session.put('sso_test_user', {
-        email: ssoResult.email,
-        username: ssoResult.username,
-      })
-
-      ctx.session.flash({ success: 'Connexion SSO reussie' })
-
-      return ctx.response.redirect('/home')
+  private async makeUniqueUsername(baseUsername: string) {
+    let candidate = baseUsername
+    let suffix = 1
+    while (await User.findBy('Username', candidate)) {
+      candidate = `${baseUsername}_${suffix}`.slice(0, 40)
+      suffix += 1
     }
-
-    return result
-  }
-
-  public logout(ctx: HttpContext) {
-    const handlers = this.makeHandlers()
-    return handlers.logout(ctx)
+    return candidate
   }
 }

@@ -4,7 +4,7 @@ import { defineConfig, stores } from '@adonisjs/session'
 
 const sessionConfig = defineConfig({
   enabled: true,
-  cookieName: 'adonis-session',
+  cookieName: 'Je-Donne-Je-prete',
 
   /**
    * When set to true, the session id cookie will be deleted
@@ -25,7 +25,7 @@ const sessionConfig = defineConfig({
   cookie: {
     path: '/',
     httpOnly: true,
-    secure: app.inProduction,
+    secure: false,
     sameSite: 'lax',
   },
 

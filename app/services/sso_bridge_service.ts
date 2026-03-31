@@ -1,22 +1,31 @@
 import ssoBridgePackage from 'sso-bridge'
 import env from '#start/env'
 
-type SsoBridgeFactory = {
-  createSSOBridge: (options: { apiKey: string; ssoPortal?: string }) => unknown
+// On définit l'interface pour avoir l'autocomplétion et éviter les erreurs
+interface SsoBridge {
+  generateCorrelationId(): Promise<string>
+  retrieveLoginInfo(correlationId: string): Promise<{
+    email: string
+    username: string
+    error?: string
+    isSuccess: () => boolean
+  }>
 }
 
-const { createSSOBridge } = ssoBridgePackage as SsoBridgeFactory
-
-export function createBridgeFromEnv() {
-  const apiKey = env.get('API_KEY')
+/**
+ * Initialise le bridge avec les clés du .env
+ */
+export function createBridgeFromEnv(): SsoBridge {
+  const apiKey = env.get('API_KEY') // Ta clé secrète pour parler au bridge
   const ssoPortal = env.get('SSO_PORTAL')
 
   if (!apiKey) {
-    throw new Error('API_KEY manquante dans les variables d environnement')
+    throw new Error('API_KEY (Bridge Token) manquante dans le .env')
   }
 
-  return createSSOBridge({
-    apiKey,
-    ssoPortal,
+  // @ts-ignore - On cast pour utiliser les méthodes du SDK
+  return ssoBridgePackage.createSSOBridge({
+    apiKey: apiKey,
+    ssoPortal: ssoPortal,
   })
 }
