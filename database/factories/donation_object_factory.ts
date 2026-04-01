@@ -12,7 +12,6 @@ const availableImages = [
   'n6d4miadmzdh4r4ns5ryfx50.webp',
   'n7drdp41tmoc554wz4fohsch.webp',
   'qrchvdqd4c47wkjoadwsm8o9.webp',
-  'sgnxlx9oygjqroptdaxfpz4.webp',
   't4n41e8b0sbcerfn7rxgwz4y.webp',
   'v1jsbhoxtvv56xd3mp7i4ue8.webp',
   'xe2pa2n1c1wktcdcp7sq95hh.webp'

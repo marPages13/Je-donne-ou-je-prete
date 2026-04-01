@@ -35,8 +35,8 @@ export default class SsoTestController {
       links: {
         login: `${appUrl}/sso/login`,
         callback: `${appUrl}/sso/callback?correlationId=XXX`,
-        logout: `${appUrl}/sso/logout`
-      }
+        logout: `${appUrl}/sso/logout`,
+      },
     })
   }
 
@@ -46,7 +46,6 @@ export default class SsoTestController {
   public async loginRedirect({ response }: HttpContext) {
     const bridge = createBridgeFromEnv() as any
     const cid = await bridge.generateCorrelationId()
-    console.log('ID généré:', cid)
     const portal = this.getPortalUrl()
     const callbackUrl = `${this.getAppUrl()}/sso/callback?correlationId=${cid}`
     const finalUrl = `${portal}/redirect?correlationId=${cid}&redirectUri=${encodeURIComponent(callbackUrl)}`
@@ -57,7 +56,6 @@ export default class SsoTestController {
    * PHASE 2 : Retour du portail SSO & Validation
    */
   public async callback({ request, session, response, auth }: HttpContext) {
-    console.log('--- [SSO RETOUR - FINAL FIX] ---')
     const cid = request.input('correlationId')
     if (!cid) return response.badRequest('CID manquant')
     try {
@@ -65,13 +63,11 @@ export default class SsoTestController {
       const portal = this.getPortalUrl()
       const baseUrl = portal.endsWith('/auth') ? portal : `${portal}/auth`
       const bridgeUrl = `${baseUrl}/bridge/check?token=${apiKey}&correlationId=${cid}`
-      console.log('Tentative de GET sur:', bridgeUrl)
       const apiResponse = await fetch(bridgeUrl, {
         method: 'GET',
-        headers: { 'Accept': 'application/json' }
+        headers: { Accept: 'application/json' },
       })
-      const ssoResult = await apiResponse.json() as any
-      console.log('Résultat API:', ssoResult)
+      const ssoResult = (await apiResponse.json()) as any
       if (ssoResult.error || !ssoResult.email) {
         session.flash({ error: `Erreur : ${ssoResult.error || 'User inconnu'}` })
         return response.redirect('/login')
@@ -128,7 +124,10 @@ export default class SsoTestController {
 
   private normalizeUsername(rawEmail: string) {
     const localPart = rawEmail.includes('@') ? rawEmail.split('@')[0] : rawEmail
-    const cleaned = localPart.trim().replace(/\./g, '-').replace(/[^a-zA-Z0-9_-]/g, '')
+    const cleaned = localPart
+      .trim()
+      .replace(/\./g, '-')
+      .replace(/[^a-zA-Z0-9_-]/g, '')
     return (cleaned || 'sso_user').slice(0, 40)
   }
 
