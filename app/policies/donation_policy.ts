@@ -6,12 +6,12 @@ import { AuthorizerResponse } from '@adonisjs/bouncer/types'
 export default class DonationPolicy extends BasePolicy {
   // Seul le proprio modifie
   edit(user: User, donation: DonationObject): AuthorizerResponse {
-    return user.id === donation.userId
+    return !!user.isadmin || user.id === donation.userId
   }
 
   // Seul le proprio supprime
   delete(user: User, donation: DonationObject): AuthorizerResponse {
-    return user.id === donation.userId
+    return !!user.isadmin || user.id === donation.userId
   }
 
   // Interdit de réserver son propre objet

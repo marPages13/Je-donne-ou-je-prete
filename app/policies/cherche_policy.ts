@@ -6,12 +6,12 @@ import { AuthorizerResponse } from '@adonisjs/bouncer/types'
 export default class CherchePolicy extends BasePolicy {
   // Seul le proprio modifie
   edit(user: User, cherche: ChercheObject): AuthorizerResponse {
-    return user.id === cherche.userId
+    return !!user.isadmin || user.id === cherche.userId
   }
 
   // Seul le proprio supprime
   delete(user: User, cherche: ChercheObject): AuthorizerResponse {
-    return user.id === cherche.userId
+    return !!user.isadmin || user.id === cherche.userId
   }
 
   // Interdit de se proposer pour son propre objet

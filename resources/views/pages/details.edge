@@ -3,6 +3,8 @@
 @include('partials/header')
 @let(isSearchMode = !!isCherchePage)
 @let(reserveRouteName = isSearchMode ? 'cherche_objects.reserve' : 'donation_objects.reserve')
+@let(editRouteName = isSearchMode ? 'cherche_objects.edit' : 'donation_objects.edit')
+@let(deleteRouteName = isSearchMode ? 'cherche_objects.destroy' : 'donation_objects.destroy')
 @let(catMap = {
 'Sport & Loisirs': 'sport',
 'Culture & Livres': 'books',
@@ -67,6 +69,19 @@
       {{ object.description }}
     </p>
 
+    @if(auth.isAuthenticated && (auth.user.id === object.userId || auth.user.isadmin))
+    <div class="item-actions-admin">
+      <a href="{{ route(editRouteName, { id: object.id }) }}" class="btn-admin-edit">
+        {{ t('messages.account.btn_edit') }}
+      </a>
+      <form action="{{ route(deleteRouteName, { id: object.id }) }}?_method=DELETE" method="POST"
+        onsubmit="return confirm('{{ t('messages.account.confirm_delete') }}')" style="margin:0;">
+        {{ csrfField() }}
+        <button type="submit" class="btn-admin-delete">{{ t('messages.account.btn_delete') }}</button>
+      </form>
+    </div>
+    @end
+
     {{-- Logique de réservation --}}
     @if(auth.isAuthenticated)
     <button type="button" class="reservButton" onclick="document.getElementById('reserve-modal').showModal()">
@@ -94,7 +109,56 @@
     @end
 
     <style>
-
+      .item-actions-admin {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 18px;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+      .btn-admin-edit {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 0.7em 2em;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 1.1em;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s;
+        box-shadow: 0 1px 4px #0001;
+      }
+      .btn-admin-edit:hover {
+        background: #1d4ed8;
+      }
+      .btn-admin-delete {
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        padding: 0.7em 2em;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 1px 4px #0001;
+      }
+      .btn-admin-delete:hover {
+        background: #b91c1c;
+      }
+      @media (max-width: 600px) {
+        .item-actions-admin {
+          flex-direction: column;
+          gap: 8px;
+        }
+        .btn-admin-edit, .btn-admin-delete {
+          width: 100%;
+          padding: 0.7em 0;
+        }
+      }
     </style>
 
   </div>
