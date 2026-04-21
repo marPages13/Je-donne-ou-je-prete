@@ -8,21 +8,24 @@ import {
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
 import sharp from 'sharp'
-import fs from 'node:fs/promises'
 import mail from '@adonisjs/mail/services/main'
 import { DateTime } from 'luxon'
 import CherchePolicy from '#policies/cherche_policy'
+import { purgeSoftDeletedObjects } from '#services/objects_retention_service'
 
 export default class ChercheObjectsController {
   /**
    * Liste des objets avec filtres (Home)
    */
   async index({ request, view }: HttpContext) {
+    await purgeSoftDeletedObjects()
+
     const filterCategorie = request.input('filter_categorie')
 
     // On ajoute direct le filtre sur le status 1 ici
     let query = ChercheObject.query()
       .where('status', 1)
+      .where('is_deleted', false)
       .orderBy('urgent', 'desc')
       .orderBy('created_at', 'desc')
 
@@ -35,7 +38,8 @@ export default class ChercheObjectsController {
     // Pour les filtres, on ne veut aussi que les catégories des objets dispos
     const categoriesResult = await db
       .from('cherche_objects')
-      .where('status', 1) // Optionnel: pour ne pas afficher des catégories vides
+      .where('status', 1)
+      .where('is_deleted', false)
       .distinct('categorie')
       .orderBy('categorie', 'asc')
 
@@ -94,7 +98,11 @@ export default class ChercheObjectsController {
    * Affiche les détails d'un objet
    */
   async show({ params, view }: HttpContext) {
-    const object = await ChercheObject.query().where('id', params.id).preload('user').firstOrFail()
+    const object = await ChercheObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .preload('user')
+      .firstOrFail()
 
     return view.render('pages/details', { object })
   }
@@ -103,7 +111,10 @@ export default class ChercheObjectsController {
    * Formulaire d'édition (vérification propriétaire)
    */
   async edit({ params, view, bouncer }: HttpContext) {
-    const object = await ChercheObject.findOrFail(params.id)
+    const object = await ChercheObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .firstOrFail()
 
     // Vérifie si l'utilisateur a le droit d'éditer selon la Policy
     await bouncer.with(CherchePolicy).authorize('edit', object)
@@ -116,7 +127,10 @@ export default class ChercheObjectsController {
    */
   async update({ params, request, response, bouncer }: HttpContext) {
     const payload = await request.validateUsing(updateDonationObjectValidator)
-    const object = await ChercheObject.findOrFail(params.id)
+    const object = await ChercheObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .firstOrFail()
 
     await bouncer.with(CherchePolicy).authorize('edit', object)
 
@@ -153,18 +167,17 @@ export default class ChercheObjectsController {
    * Suppression de l'objet
    */
   async destroy({ params, response, bouncer }: HttpContext) {
-    const object = await ChercheObject.findOrFail(params.id)
+    const object = await ChercheObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .firstOrFail()
 
     // On vérifie le droit de suppression
     await bouncer.with(CherchePolicy).authorize('delete', object)
 
-    if (object.imagePath) {
-      try {
-        await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
-      } catch (e) {}
-    }
-
-    await object.delete()
+    object.isDeleted = true
+    object.deletedAt = DateTime.now()
+    await object.save()
     return response.redirect().toPath('/account')
   }
 
@@ -178,7 +191,11 @@ export default class ChercheObjectsController {
 
       const userMessage = request.input('user_message', 'Aucun message particulier.')
 
-      const item = await ChercheObject.query().where('id', params.id).preload('user').firstOrFail()
+      const item = await ChercheObject.query()
+        .where('id', params.id)
+        .where('is_deleted', false)
+        .preload('user')
+        .firstOrFail()
 
       await bouncer.with(CherchePolicy).authorize('reserve', item)
 
@@ -229,6 +246,7 @@ export default class ChercheObjectsController {
     const object = await ChercheObject.query()
       .where('id', params.id)
       .where('userId', user.id)
+      .where('is_deleted', false)
       .firstOrFail()
 
     object.status = 1

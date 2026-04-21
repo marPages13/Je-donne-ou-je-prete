@@ -12,12 +12,15 @@ import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 import DonationPolicy from '#policies/donation_policy'
 import { sendWithPool } from '#services/mail_pool'
+import { purgeSoftDeletedObjects } from '#services/objects_retention_service'
 
 export default class DonationObjectsController {
   /**
    * Liste des objets avec filtres (Home)
    */
   async index({ request, view, auth }: HttpContext) {
+    await purgeSoftDeletedObjects()
+
     const filterType = request.input('filter_type')
     const filterCategorie = request.input('filter_categorie')
     const currentUser = auth.user
@@ -26,6 +29,7 @@ export default class DonationObjectsController {
     // On ajoute direct le filtre sur le status 1 ici
     let query = DonationObject.query()
       .where('donation_objects.status', 1)
+      .where('donation_objects.is_deleted', false)
       .orderBy('donation_objects.urgent', 'desc')
 
     if (isExternalUser) {
@@ -49,7 +53,8 @@ export default class DonationObjectsController {
     // Pour les filtres, on ne veut aussi que les catégories des objets dispos
     const categoriesResult = await db
       .from('donation_objects')
-      .where('status', 1) // Optionnel: pour ne pas afficher des catégories vides
+      .where('status', 1)
+      .where('is_deleted', false)
       .distinct('categorie')
       .orderBy('categorie', 'asc')
 
@@ -108,7 +113,11 @@ export default class DonationObjectsController {
    * Affiche les détails d'un objet
    */
   async show({ params, view }: HttpContext) {
-    const object = await DonationObject.query().where('id', params.id).preload('user').firstOrFail()
+    const object = await DonationObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .preload('user')
+      .firstOrFail()
 
     return view.render('pages/details', { object })
   }
@@ -117,7 +126,10 @@ export default class DonationObjectsController {
    * Formulaire d'édition (vérification propriétaire)
    */
   async edit({ params, view, bouncer }: HttpContext) {
-    const object = await DonationObject.findOrFail(params.id)
+    const object = await DonationObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .firstOrFail()
 
     // Vérifie si l'utilisateur a le droit d'éditer selon la Policy
     await bouncer.with(DonationPolicy).authorize('edit', object)
@@ -129,18 +141,17 @@ export default class DonationObjectsController {
    * Suppression de l'objet et de son image
    */
   async destroy({ params, response, bouncer }: HttpContext) {
-    const object = await DonationObject.findOrFail(params.id)
+    const object = await DonationObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .firstOrFail()
 
     // On vérifie le droit de suppression
     await bouncer.with(DonationPolicy).authorize('delete', object)
 
-    if (object.imagePath) {
-      try {
-        await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
-      } catch (e) {}
-    }
-
-    await object.delete()
+    object.isDeleted = true
+    object.deletedAt = DateTime.now()
+    await object.save()
     return response.redirect().toPath('/account')
   }
 
@@ -151,7 +162,11 @@ export default class DonationObjectsController {
 
       const userMessage = request.input('user_message', 'Aucun message particulier.')
 
-      const item = await DonationObject.query().where('id', params.id).preload('user').firstOrFail()
+      const item = await DonationObject.query()
+        .where('id', params.id)
+        .where('is_deleted', false)
+        .preload('user')
+        .firstOrFail()
 
       await bouncer.with(DonationPolicy).authorize('reserve', item)
 
@@ -197,6 +212,7 @@ export default class DonationObjectsController {
     const object = await DonationObject.query()
       .where('id', params.id)
       .where('userId', user.id)
+      .where('is_deleted', false)
       .firstOrFail()
 
     object.status = 1
@@ -213,7 +229,10 @@ export default class DonationObjectsController {
   async update({ params, request, response, auth, bouncer }: HttpContext) {
     if (!auth.user) return response.unauthorized('Vous devez être connecté.')
 
-    const object = await DonationObject.findOrFail(params.id)
+    const object = await DonationObject.query()
+      .where('id', params.id)
+      .where('is_deleted', false)
+      .firstOrFail()
     await bouncer.with(DonationPolicy).authorize('edit', object)
 
     const payload = await request.validateUsing(updateDonationObjectValidator)

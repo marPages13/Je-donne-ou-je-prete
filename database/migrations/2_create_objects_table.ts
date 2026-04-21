@@ -21,6 +21,8 @@ export default class extends BaseSchema {
       table.integer('status').notNullable().defaultTo(1)
       table.string('image_path').nullable()
       table.string('categorie').defaultTo('aucune')
+      table.boolean('is_deleted').notNullable().defaultTo(false)
+      table.timestamp('deleted_at').nullable()
 
       table.boolean('urgent').defaultTo('false')
 

@@ -98,4 +98,5 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   API_KEY: Env.schema.string.optional(),
   SSO_PORTAL: Env.schema.string.optional(),
+  OBJECTS_HARD_DELETE_AFTER_DAYS: Env.schema.string.optional(),
 })

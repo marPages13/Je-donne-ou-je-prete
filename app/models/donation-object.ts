@@ -25,6 +25,12 @@ export default class DonationObject extends BaseModel {
   @column()
   declare categorie: string | null
 
+  @column({ columnName: 'is_deleted' })
+  declare isDeleted: boolean
+
+  @column.dateTime({ columnName: 'deleted_at' })
+  declare deletedAt: DateTime | null
+
   @column()
   declare imagePath: string | null
 
