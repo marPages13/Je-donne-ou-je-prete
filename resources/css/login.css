@@ -1,4 +1,9 @@
 @import url(variable.css);
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 form {
     max-width: 500px;
     margin: 0px auto;
@@ -18,6 +23,9 @@ img {
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+form img {
+    margin-bottom: 2rem;
 }
 
 input[type="text"],
