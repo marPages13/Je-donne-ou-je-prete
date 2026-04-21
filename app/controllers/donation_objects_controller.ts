@@ -262,12 +262,8 @@ export default class DonationObjectsController {
     }
     object.categorie = payload.categorie
     object.urgent = !!payload.IsUrgent
-    object.availableFrom = payload.available_from
-      ? DateTime.fromJSDate(payload.available_from)
-      : null
-    object.availableUntil = payload.available_until
-      ? DateTime.fromJSDate(payload.available_until)
-      : null
+    object.availableFrom = payload.available_from ? DateTime.fromJSDate(payload.available_from) : null
+    object.availableUntil = payload.available_until ? DateTime.fromJSDate(payload.available_until) : null
 
     await object.save()
     return response.redirect().toRoute('donation_objects.show', { id: object.id })

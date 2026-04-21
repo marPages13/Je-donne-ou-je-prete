@@ -7,6 +7,9 @@ export default class AuthController {
   public async login({ view }: HttpContext) {
     return view.render('pages/login')
   }
+  public async choixLogin({ view }: HttpContext) {
+    return view.render('pages/choix-login')
+  }
 
   //Authentifie l'utilisateur
   public async authenticate({ request, auth, response, session }: HttpContext) {

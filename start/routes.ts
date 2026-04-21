@@ -13,9 +13,10 @@ import ChercheObjectsController from '#controllers/cherche_objects_controller'
 import SsoTestController from '#controllers/sso_test_controller'
 
 // --- Public routes ---
+router.get('/choix-login', [AuthController, 'choixLogin']).as('choix_login')
+router.get('/', [AuthController, 'choixLogin']).as('login0')
 router.get('/login', [AuthController, 'login']).as('login')
 router.post('/login', [AuthController, 'authenticate']).as('autenticate')
-router.get('/', [AuthController, 'login']).as('login0')
 router.get('/sso/test', [SsoTestController, 'status']).as('sso.test.status')
 router.get('/sso/login', [SsoTestController, 'loginRedirect']).as('sso.test.login')
 router.get('/sso/callback', [SsoTestController, 'callback']).as('sso.test.callback')
