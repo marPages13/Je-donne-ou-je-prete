@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { randomBytes } from 'node:crypto'
 import Hash from '@adonisjs/core/services/hash'
-import { createBridgeFromEnv } from '#services/sso_bridge_service'
-import env from '#start/env'
+import { createAdonisSsoFlowFromEnv } from '#services/sso_bridge_service'
 import User from '#models/user'
 
 type SsoResult = {
@@ -13,84 +12,37 @@ type SsoResult = {
 }
 
 export default class SsoTestController {
-  // Utilitaires pour DRY
-  private getPortalUrl() {
-    return (env.get('SSO_PORTAL') || '').replace(/\/$/, '')
-  }
-  private getAppUrl() {
-    return (env.get('APP_URL') || 'http://127.0.0.1:3333').replace(/\/$/, '')
+  private flow() {
+    return createAdonisSsoFlowFromEnv()
   }
 
   /**
    * Route de test SSO : GET /sso/test
    * Affiche un état simple et les liens SSO utiles.
    */
-  public async status({ response }: HttpContext) {
-    const apiKey = env.get('API_KEY')
-    const appUrl = this.getAppUrl()
-    return response.ok({
-      status: 'ok',
-      apiKeyPresent: !!apiKey,
-      message: apiKey ? 'API_KEY détectée.' : 'API_KEY manquante dans .env',
-      links: {
-        login: `${appUrl}/sso/login`,
-        callback: `${appUrl}/sso/callback?correlationId=XXX`,
-        logout: `${appUrl}/sso/logout`,
-      },
-    })
+  public async status(ctx: HttpContext) {
+    return this.flow().status(ctx as any)
   }
 
   /**
    * PHASE 1 : Redirection vers le portail SSO
    */
-  public async loginRedirect({ response }: HttpContext) {
-    const bridge = createBridgeFromEnv() as any
-    const cid = await bridge.generateCorrelationId()
-    const portal = this.getPortalUrl()
-    const callbackUrl = `${this.getAppUrl()}/sso/callback?correlationId=${cid}`
-    const finalUrl = `${portal}/redirect?correlationId=${cid}&redirectUri=${encodeURIComponent(callbackUrl)}`
-    return response.redirect(finalUrl)
+  public async loginRedirect({ response, request, session }: HttpContext) {
+    return this.flow().loginRedirect({ response, request, session } as any)
   }
 
   /**
    * PHASE 2 : Retour du portail SSO & Validation
    */
-  public async callback({ request, session, response, auth }: HttpContext) {
-    const cid = request.input('correlationId')
-    if (!cid) return response.badRequest('CID manquant')
-    try {
-      const apiKey = env.get('API_KEY')
-      const portal = this.getPortalUrl()
-      const baseUrl = portal.endsWith('/auth') ? portal : `${portal}/auth`
-      const bridgeUrl = `${baseUrl}/bridge/check?token=${apiKey}&correlationId=${cid}`
-      const apiResponse = await fetch(bridgeUrl, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      })
-      const ssoResult = (await apiResponse.json()) as any
-      if (ssoResult.error || !ssoResult.email) {
-        session.flash({ error: `Erreur : ${ssoResult.error || 'User inconnu'}` })
-        return response.redirect('/login')
-      }
-      // Connexion
-      const user = await this.findOrCreateSsoUser(ssoResult)
-      await auth.use('web').login(user)
-      return response.redirect('/home')
-    } catch (error) {
-      console.error('Erreur technique:', error)
-      return response.internalServerError(`Erreur : ${error.message}`)
-    }
+  public async callback(ctx: HttpContext) {
+    return this.flow().callbackLogin(ctx as any, (payload: SsoResult) => this.findOrCreateSsoUser(payload))
   }
 
   /**
    * PHASE 3 : Déconnexion (Locale + Portail)
    */
-  public async logout({ auth, response }: HttpContext) {
-    await auth.use('web').logout()
-    const portal = this.getPortalUrl()
-    const appUrl = this.getAppUrl()
-    const postLogoutUrl = encodeURIComponent(appUrl.endsWith('/') ? appUrl : appUrl + '/')
-    return response.redirect(`${portal}/logout?redirectUri=${postLogoutUrl}`)
+  public async logout({ auth, response, request, session }: HttpContext) {
+    return this.flow().logout({ auth, response, request, session } as any)
   }
 
   /**
