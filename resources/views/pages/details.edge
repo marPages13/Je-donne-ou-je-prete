@@ -69,7 +69,7 @@
       {{ object.description }}
     </p>
 
-    @if(auth.isAuthenticated && (auth.user.id === object.userId || auth.user.isadmin))
+    @if(auth.isAuthenticated && auth.user.isadmin)
     <div class="item-actions-admin">
       <a href="{{ route(editRouteName, { id: object.id }) }}" class="btn-admin-edit">
         {{ t('messages.account.btn_edit') }}
