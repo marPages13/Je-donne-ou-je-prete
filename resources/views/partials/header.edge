@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  {{-- Utilisation de asset() pour l'icône : sécurité max pour les chemins --}}
-  <link rel="icon" type="image/x-icon" href="/img/logo.png">
+  <link rel="icon" type="image/x-icon" href="{{ asset('resources/img/logo.png') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   @vite([`resources/css/${css}`, 'resources/css/app.css', 'resources/js/app.js'])
@@ -23,7 +22,7 @@
   <header>
     {{-- Logo cliquable vers Home via route nommée --}}
     <a href="{{ route('donation_objects.index') }}" class="logo">
-      <img src="/img/logo.png" alt="Logo">
+      <img src="{{ asset('resources/img/logo.png') }}" alt="Logo">
     </a>
 
     <div class="bouton">
@@ -38,7 +37,7 @@
 
       {{-- Compte utilisateur --}}
       <a href="{{ route('account') }}" class="textdeco account-link">
-        <img src="/img/user.svg" class="imgbutton" alt="User">
+        <img src="{{ asset('resources/img/user.svg') }}" class="imgbutton" alt="User">
       </a>
 
       {{-- Sélecteur de langue Desktop --}}

@@ -12,7 +12,7 @@
   <main>
     @include('partials/flash')
     <form method="get">
-    <img src="/img/logo.png">
+    <img src="{{ asset('resources/img/logo.png') }}">
       <button class="btn btn-outline-info mt-2" formaction="{{ route('sso.test.login') }}" type="submit">
         ETML
       </button>

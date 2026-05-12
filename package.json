@@ -65,6 +65,7 @@
     "@adonisjs/vite": "^4.0.0",
     "@vinejs/vine": "^3.0.1",
     "auth": "^1.0.2",
+    "better-sqlite3": "^12.10.0",
     "bootstrap": "^5.3.8",
     "edge.js": "^6.2.1",
     "luxon": "^3.7.2",

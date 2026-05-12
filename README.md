@@ -33,6 +33,7 @@
 | ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) | Backend & logique applicative |
 | ![AdonisJS](https://img.shields.io/badge/AdonisJS-220052?style=for-the-badge&logo=adonisjs&logoColor=white) | Framework Node.js |
 | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) | Base de données |
+| ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white) | Base locale de développement |
 | ![Edge](https://img.shields.io/badge/Edge-5A45FF?style=for-the-badge&logo=edge&logoColor=white) | Templates serveur |
 | ![Sharp](https://img.shields.io/badge/Sharp-99CC00?style=for-the-badge) | Compression d’images |
 
@@ -52,6 +53,8 @@
   cp .env.example .env
   node ace generate:key
   ```
+
+  Par défaut, `DB_TYPE=mysql`. Pour utiliser SQLite en local, mets `DB_TYPE=sqlite` dans `.env`.
 
 3. **Créer la base et seed**
 
