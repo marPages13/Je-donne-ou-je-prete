@@ -8,10 +8,10 @@ import {
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
 import sharp from 'sharp'
-import mail from '@adonisjs/mail/services/main'
 import { DateTime } from 'luxon'
 import CherchePolicy from '#policies/cherche_policy'
 import { purgeSoftDeletedObjects } from '#services/objects_retention_service'
+import { sendWithPool } from '#services/mail_pool'
 
 export default class ChercheObjectsController {
   /**
@@ -216,7 +216,7 @@ export default class ChercheObjectsController {
       }
 
       // ENVOI DU MAIL
-      await mail.send((message) => {
+      await sendWithPool((message) => {
         message
           .to(ownerEmail)
           .from('dami.scoot3@gmail.com')
