@@ -26,6 +26,31 @@
     margin-left: 20px;
 }
 
+/* Style commun aux deux bannières */
+.sticky-banner {
+    position: fixed;   /* Reste fixé à l'écran */
+    top: 70%;         /* Positionné à 70% du haut de la page */
+    transform: translateY(-50%); /* Centrage vertical parfait */
+    width: 20rem;      /* Ajustez la largeur selon vos besoins */
+    z-index: 1000;     /* Passe au-dessus du contenu */
+}
+
+/* Positionnement spécifique */
+.sticky-banner.left {
+    left: 5px;        /* Distance du bord gauche */
+}
+
+.sticky-banner.right {
+    right: 5px;       /* Distance du bord droit */
+}
+
+/* Optionnel : Masquer les images sur mobile pour ne pas cacher le contenu */
+@media (max-width: 1200px) {
+    .sticky-banner {
+        display: none;
+    }
+}
+
 /* --- Barre de Recherche --- */
 .search-container {
     display: flex;
