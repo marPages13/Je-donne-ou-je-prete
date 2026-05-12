@@ -2,8 +2,6 @@
 import { defineConfig } from 'vite'
 import adonisjs from '@adonisjs/vite/client'
 
-console.log('ALLOWED_HOST:', process.env.ALLOWED_HOST)
-
 export default defineConfig({
   plugins: [
     adonisjs({
@@ -11,7 +9,16 @@ export default defineConfig({
        * Entrypoints of your application. Each entrypoint will
        * result in a separate bundle.
        */
-      entrypoints: ['resources/css/app.css', 'resources/js/app.js'],
+      entrypoints: [
+        'resources/css/app.css',
+        'resources/css/login.css',
+        'resources/css/home.css',
+        'resources/css/account.css',
+        'resources/css/details.css',
+        'resources/css/edit.css',
+        'resources/css/ajout.css',
+        'resources/js/app.js',
+      ],
 
       /**
        * Paths to watch and reload the browser on file change
@@ -20,8 +27,7 @@ export default defineConfig({
     }),
   ],
   server: {
-    allowedHosts: process.env.ALLOWED_HOST
-      ? [process.env.ALLOWED_HOST]
-      : ['jdjp.etml.net'],
+    middlewareMode: process.env.NODE_ENV === 'production',
+    allowedHosts: process.env.ALLOWED_HOST ? [process.env.ALLOWED_HOST] : ['localhost'],
   },
 })

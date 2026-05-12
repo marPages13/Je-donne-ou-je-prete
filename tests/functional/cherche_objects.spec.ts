@@ -23,7 +23,7 @@ test.group('ChercheObjects - fonctionnalités critiques', (group) => {
       password: 'password',
     })
 
-    const item = await ChercheObject.create({
+    await ChercheObject.create({
       userId: user.id,
       name: 'Table',
       description: 'Table en bois',
