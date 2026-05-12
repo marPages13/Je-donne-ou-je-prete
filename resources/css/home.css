@@ -45,7 +45,7 @@
 }
 
 /* Optionnel : Masquer les images sur mobile pour ne pas cacher le contenu */
-@media (max-width: 1200px) {
+@media (max-width: 1800px), (max-height: 700px) {
     .sticky-banner {
         display: none;
     }
