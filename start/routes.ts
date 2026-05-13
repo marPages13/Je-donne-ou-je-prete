@@ -14,7 +14,7 @@ import SsoTestController from '#controllers/sso_test_controller'
 
 // --- Public routes ---
 router.get('/choix-login', [AuthController, 'choixLogin']).as('choix_login')
-router.get('/', [AuthController, 'choixLogin']).as('login0')
+router.get('/', [DonationObjectsController, 'index']).as('login0')
 router.get('/login', [AuthController, 'login']).as('login')
 router.post('/login', [AuthController, 'authenticate']).as('autenticate')
 router.get('/sso/test', [SsoTestController, 'status']).as('sso.test.status')
