@@ -1,7 +1,6 @@
 import { Logger } from '@adonisjs/core/logger'
 import { HttpContext } from '@adonisjs/core/http'
 import { NextFn } from '@adonisjs/core/types/http'
-import { execSync } from 'node:child_process'
 
 /**
  * The container bindings middleware binds classes to their request
@@ -13,24 +12,21 @@ import { execSync } from 'node:child_process'
 export default class ContainerBindingsMiddleware {
   private static cachedRepoVersion: string | null = null
 
-  private static computeRepoVersion() {
+  private static async computeRepoVersion() {
     if (this.cachedRepoVersion) {
       return this.cachedRepoVersion
     }
 
     try {
-      const rawCount = execSync('git rev-list --count HEAD', { encoding: 'utf8' }).trim()
-      const commitCount = Number.parseInt(rawCount, 10)
-
-      if (Number.isNaN(commitCount) || commitCount < 0) {
+      const response = await fetch('https://api.github.com/repos/BlackAngelTVdev/Je-donne-ou-je-prete/releases/latest')
+      
+      if (!response.ok) {
         this.cachedRepoVersion = 'V0.00'
         return this.cachedRepoVersion
       }
 
-      const major = Math.floor(commitCount / 100)
-      const minor = (commitCount % 100).toString().padStart(2, '0')
-
-      this.cachedRepoVersion = `V${major}.${minor}`
+      const data = (await response.json()) as { tag_name: string }
+      this.cachedRepoVersion = data.tag_name || 'V0.00'
       return this.cachedRepoVersion
     } catch {
       this.cachedRepoVersion = 'V0.00'
@@ -38,14 +34,14 @@ export default class ContainerBindingsMiddleware {
     }
   }
 
-  handle(ctx: HttpContext, next: NextFn) {
+  async handle(ctx: HttpContext, next: NextFn) {
     ctx.containerResolver.bindValue(HttpContext, ctx)
     ctx.containerResolver.bindValue(Logger, ctx.logger)
     const requestPath = ctx.request.url()
     const isCherchePage = requestPath.startsWith('/cherche') || requestPath.startsWith('/item/cherche')
 
     ctx.view.share({
-      repoVersion: ContainerBindingsMiddleware.computeRepoVersion(),
+      repoVersion: await ContainerBindingsMiddleware.computeRepoVersion(),
       isCherchePage,
     })
 
