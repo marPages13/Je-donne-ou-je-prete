@@ -18,7 +18,6 @@
       "email": ""
     }
   ],
-  "project url": "https://www.je-prete-je-donne.ch",
 
   "scripts": {
     "start": "node bin/server.js",
