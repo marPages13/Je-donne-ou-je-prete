@@ -24,8 +24,11 @@
 - ✅ **Rôles utilisateur en DB** : `extainre` et `isadmin` disponibles dans `users`.
 - ✅ **Règle visibilité externe** : en mode don, un utilisateur `extainre=true` voit uniquement les objets publiés depuis plus de 3 mois.
 - ✅ **Multilingue FR / EN** : traductions des vues principales (header, home, details, new, etc.).
-- ✅ **Footer enrichi** : badge GitHub + version projet calculée depuis le nombre de commits (`Vx.xx`).
+- ✅ **Footer enrichi** : badge GitHub + version projet en fonction du nom de la release (`vBx.x.x` ou `vOx.x.x`).
+- ✅ **Tests automatisés** : exécution automatique de la suite de tests pour valider la stabilité de l'application à chaque push.
+- ✅ **Releases automatisées** : build, package (zip) et déploiement automatique d'une nouvelle release GitHub dès qu'un changement de version est détecté dans le `package.json`.
 
+  
 ## 🛠 Tech Stack
 
 | Technologie | Usage |
