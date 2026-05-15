@@ -18,8 +18,10 @@ export default class ContainerBindingsMiddleware {
     }
 
     try {
-      const response = await fetch('https://api.github.com/repos/BlackAngelTVdev/Je-donne-ou-je-prete/releases/latest')
-      
+      const response = await fetch(
+        'https://api.github.com/repos/BlackAngelTVdev/Je-donne-ou-je-prete/releases/latest'
+      )
+
       if (!response.ok) {
         this.cachedRepoVersion = 'V0.00'
         return this.cachedRepoVersion
@@ -38,7 +40,8 @@ export default class ContainerBindingsMiddleware {
     ctx.containerResolver.bindValue(HttpContext, ctx)
     ctx.containerResolver.bindValue(Logger, ctx.logger)
     const requestPath = ctx.request.url()
-    const isCherchePage = requestPath.startsWith('/cherche') || requestPath.startsWith('/item/cherche')
+    const isCherchePage =
+      requestPath.startsWith('/cherche') || requestPath.startsWith('/item/cherche')
 
     ctx.view.share({
       repoVersion: await ContainerBindingsMiddleware.computeRepoVersion(),

@@ -28,56 +28,55 @@
 - ✅ **Tests automatisés** : exécution automatique de la suite de tests pour valider la stabilité de l'application à chaque push.
 - ✅ **Releases automatisées** : build, package (zip) et déploiement automatique d'une nouvelle release GitHub dès qu'un changement de version est détecté dans le `package.json`.
 
-  
 ## 🛠 Tech Stack
 
-| Technologie | Usage |
-| :--- | :--- |
+| Technologie                                                                                                       | Usage                         |
+| :---------------------------------------------------------------------------------------------------------------- | :---------------------------- |
 | ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) | Backend & logique applicative |
-| ![AdonisJS](https://img.shields.io/badge/AdonisJS-220052?style=for-the-badge&logo=adonisjs&logoColor=white) | Framework Node.js |
-| ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) | Base de données |
-| ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white) | Base locale de développement |
-| ![Edge](https://img.shields.io/badge/Edge-5A45FF?style=for-the-badge&logo=edge&logoColor=white) | Templates serveur |
-| ![Sharp](https://img.shields.io/badge/Sharp-99CC00?style=for-the-badge) | Compression d’images |
+| ![AdonisJS](https://img.shields.io/badge/AdonisJS-220052?style=for-the-badge&logo=adonisjs&logoColor=white)       | Framework Node.js             |
+| ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)                | Base de données               |
+| ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)             | Base locale de développement  |
+| ![Edge](https://img.shields.io/badge/Edge-5A45FF?style=for-the-badge&logo=edge&logoColor=white)                   | Templates serveur             |
+| ![Sharp](https://img.shields.io/badge/Sharp-99CC00?style=for-the-badge)                                           | Compression d’images          |
 
 ## 🚀 Installation & Lancement
 
 1. **Cloner le projet**
 
-  ```bash
-  git clone https://github.com/BlackAngelTVdev/Je-donne-ou-je-prete.git
-  cd Je-donne-ou-je-prete
-  ```
+```bash
+git clone https://github.com/BlackAngelTVdev/Je-donne-ou-je-prete.git
+cd Je-donne-ou-je-prete
+```
 
 2. **Installer et configurer**
 
-  ```bash
-  npm install
-  cp .env.example .env
-  node ace generate:key
-  ```
+```bash
+npm install
+cp .env.example .env
+node ace generate:key
+```
 
-  Par défaut, `DB_TYPE=mysql`. Pour utiliser SQLite en local, mets `DB_TYPE=sqlite` dans `.env`.
+Par défaut, `DB_TYPE=mysql`. Pour utiliser SQLite en local, mets `DB_TYPE=sqlite` dans `.env`.
 
 3. **Créer la base et seed**
 
-  ```bash
-  node ace migration:fresh --seed
-  ```
+```bash
+node ace migration:fresh --seed
+```
 
 4. **Lancer en dev**
 
-  ```bash
-  npm run dev
-  ```
+```bash
+npm run dev
+```
 
 ## 📖 Comptes par défaut
 
-| Compte | Username | Mot de passe | Flags |
-| :--- | :--- | :--- | :--- |
-| **Admin** | `Admin` | `Admin` | `isadmin=true`, `extainre=false` |
-| **Test** | `Test` | `1234` | `isadmin=false`, `extainre=false` |
-| **Guest** | `Guest` | `Guest` | `isadmin=false`, `extainre=true` |
+| Compte    | Username | Mot de passe | Flags                             |
+| :-------- | :------- | :----------- | :-------------------------------- |
+| **Admin** | `Admin`  | `Admin`      | `isadmin=true`, `extainre=false`  |
+| **Test**  | `Test`   | `1234`       | `isadmin=false`, `extainre=false` |
+| **Guest** | `Guest`  | `Guest`      | `isadmin=false`, `extainre=true`  |
 
 Tu peux modifier ces comptes dans `database/seeders/1-UserSeeder.ts`.
 

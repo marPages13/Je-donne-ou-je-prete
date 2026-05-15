@@ -13,7 +13,6 @@ main div {
 main .gauche,
 main .droit {
   border: 1px solid rgba(44, 44, 44, 0.11);
-
 }
 
 main .droit {
@@ -94,7 +93,6 @@ p {
   font-weight: bold;
   padding: 15px 50px;
   text-decoration: none;
-
 }
 
 .confirm-btn {
@@ -137,7 +135,6 @@ p {
   justify-content: flex-start;
   margin-top: 10px;
 }
-
 
 .modal-cloud {
   border: 1px solid rgba(44, 44, 44, 0.15);
@@ -229,7 +226,6 @@ p {
   main div,
   main .droit {
     padding: 15px;
-
   }
 
   .reservButton {

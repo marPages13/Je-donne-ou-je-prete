@@ -10,7 +10,7 @@ services:
     image: je-donne-je-prete:latest
     container_name: je-donne-je-prete
     ports:
-      - "0.0.0.0:${PORT}:${PORT}"
+      - '0.0.0.0:${PORT}:${PORT}'
     environment:
       - HOST=${HOST}
       - PORT=${PORT}
@@ -18,7 +18,7 @@ services:
     restart: always
 
   db1:
-    image: mariadb:12.1 
+    image: mariadb:12.1
     container_name: db1
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}

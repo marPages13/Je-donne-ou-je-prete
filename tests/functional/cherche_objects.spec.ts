@@ -34,7 +34,10 @@ test.group('ChercheObjects - fonctionnalités critiques', (group) => {
 
   test('un utilisateur peut réserver un objet cherche', async ({ assert }) => {
     const owner = await createTestUser({ Username: 'Owner', email: 'owner@example.com' })
-    const requester = await createTestUser({ Username: 'Requester', email: 'requester@example.com' })
+    const requester = await createTestUser({
+      Username: 'Requester',
+      email: 'requester@example.com',
+    })
 
     const item = await createItem(owner.id, {
       name: 'Lampe',
@@ -58,7 +61,10 @@ test.group('ChercheObjects - fonctionnalités critiques', (group) => {
 
   test('un propriétaire peut reposter un objet réservé', async ({ assert }) => {
     const owner = await createTestUser({ Username: 'Owner2', email: 'owner2@example.com' })
-    const requester = await createTestUser({ Username: 'Requester2', email: 'requester2@example.com' })
+    const requester = await createTestUser({
+      Username: 'Requester2',
+      email: 'requester2@example.com',
+    })
 
     const item = await createItem(owner.id, {
       name: 'Canapé',

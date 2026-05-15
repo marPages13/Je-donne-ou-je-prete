@@ -83,7 +83,6 @@ main {
 --------------------------------*/
 
 .bottom-action-bar {
-
   position: fixed;
   bottom: 0;
   left: 0;
@@ -103,7 +102,6 @@ main {
 }
 
 .action-button {
-
   /* Styles spécifiques aux boutons de la barre */
   padding: 8px 15px;
   margin-left: 10px;
@@ -154,7 +152,6 @@ main {
 
 .action-button:hover {
   background-color: var(--colorButton);
-
 }
 
 .footer-projet {
@@ -235,7 +232,6 @@ main {
   color: rgb(0, 26, 255);
 }
 
-
 #dates_section {
   display: none;
   background: var(--colorform);
@@ -281,7 +277,7 @@ main {
 }
 
 .flash {
-    overflow: hidden;
+  overflow: hidden;
   right: 100%;
   top: 27.5px;
   pointer-events: auto;
@@ -296,8 +292,9 @@ main {
   align-items: center;
   gap: 12px;
   /* Un combo de deux ombres : une diffuse et une plus marquée */
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25),
-              0 5px 15px -5px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.25),
+    0 5px 15px -5px rgba(0, 0, 0, 0.1);
 
   cursor: pointer;
   animation: slideIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
@@ -326,13 +323,16 @@ main {
 }
 
 .flash-content {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: #1f2937;
   line-height: 1.4;
 }
-
 
 .progress-bar {
   position: absolute;
@@ -343,19 +343,16 @@ main {
   opacity: 0.8;
   animation: progress 5s linear forwards;
   filter: brightness(1.2);
-
 }
 
 .success .progress-bar {
   background: #10b981;
   box-shadow: 0 -1px 4px rgba(16, 185, 129, 0.4);
-
 }
 
 .error .progress-bar {
   background: #ef4444;
   box-shadow: 0 -1px 4px rgba(239, 68, 68, 0.4);
-
 }
 
 /* Animations */
@@ -409,7 +406,6 @@ main {
 }
 
 @media (max-width: 600px) {
-
   header a {
     display: none;
   }

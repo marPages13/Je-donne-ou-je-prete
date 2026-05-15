@@ -9,10 +9,7 @@ declare module 'sso-bridge' {
     }>
   }
 
-  function ssoBridge(options: {
-    apiKey: string
-    portal: string
-  }): SsoBridgeInstance
+  function ssoBridge(options: { apiKey: string; portal: string }): SsoBridgeInstance
 
   export default ssoBridge
 }

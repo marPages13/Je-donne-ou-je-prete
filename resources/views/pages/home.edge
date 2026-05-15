@@ -18,9 +18,9 @@
 })
 
 <main>
-  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner left" alt="Banner gauche">
+  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner left" alt="Banner gauche" />
 
-  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner right" alt="Banner droite">
+  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner right" alt="Banner droite" />
   @include('partials/flash')
 
   <h1 class="home-mode-title">
@@ -32,20 +32,20 @@
 
     {{-- Filtre Type --}}
     @if(!isSearchMode)
-    <label for="filter_type">{{ t('messages.home.filter_type') }}</label>
-    <select name="filter_type" id="filter_type" onchange="this.form.submit()">
-      <option value="" {{ !filterType ? 'selected' : '' }}>
-        {{ t('messages.common.all') }}
-      </option>
-      <option value="0" {{ filterType==='0' ? 'selected' : '' }}>
-        {{ t('messages.common.give') }}
-      </option>
-      <option value="1" {{ filterType==='1' ? 'selected' : '' }}>
-        {{ t('messages.common.lend') }}
-      </option>
-    </select>
+      <label for="filter_type">{{ t('messages.home.filter_type') }}</label>
+      <select name="filter_type" id="filter_type" onchange="this.form.submit()">
+        <option value="" {{ !filterType ? 'selected' : '' }}>
+          {{ t('messages.common.all') }}
+        </option>
+        <option value="0" {{ filterType==='0' ? 'selected' : '' }}>
+          {{ t('messages.common.give') }}
+        </option>
+        <option value="1" {{ filterType==='1' ? 'selected' : '' }}>
+          {{ t('messages.common.lend') }}
+        </option>
+      </select>
     @end
-
+    
     {{-- Filtre Catégorie --}}
     <label for="filter_categorie">{{ t('messages.home.filter_cat') }}</label>
     <select name="filter_categorie" id="filter_categorie" onchange="this.form.submit()">
@@ -54,51 +54,59 @@
       </option>
 
       @each(categorie in categories)
-      @let(currentKey = catMap[categorie] || categorie)
-      <option value="{{ categorie }}" {{ filterCategorie===categorie ? 'selected' : '' }}>
-        {{ t(`messages.add_item.categories.${currentKey}`, {}, categorie) }}
-      </option>
+        @let(currentKey = catMap[categorie] || categorie)
+        <option value="{{ categorie }}" {{ filterCategorie===categorie ? 'selected' : '' }}>
+          {{ t(`messages.add_item.categories.${currentKey}`, {}, categorie) }}
+        </option>
       @end
     </select>
   </form>
 
   <div class="midle">
     @each(object in objects)
-    <div class="item">
-      @if(object.urgent)
-        <div class="urgent-top-label">
-          {{ t('messages.common.urgent') }}
-        </div>
+      <div class="item">
+        @if(object.urgent)
+          <div class="urgent-top-label">
+            {{ t('messages.common.urgent') }}
+          </div>
         @end
-      {{-- Utilisation de route() pour aller vers la fiche produit --}}
-      <a href="{{ route(showRouteName, { id: object.id }) }}" class="flexResponse">
+        {{-- Utilisation de route() pour aller vers la fiche produit --}}
+        <a href="{{ route(showRouteName, { id: object.id }) }}" class="flexResponse">
 
-        @if(object.imagePath)
-        <img src="{{ `/uploads/items/${object.imagePath}` }}" loading="lazy" alt="{{ object.name }}"
-          class="item-image-thumbnail">
-        @end
+          @if(object.imagePath)
+            <img
+              src="{{ `/uploads/items/${object.imagePath}` }}"
+              loading="lazy"
+              alt="{{ object.name }}"
+              class="item-image-thumbnail"
+            />
+          @end
+          
+          <div class="item-info">
+            <h2 class="item-name">
+              {{ object.name }}
+            </h2>
 
-        <div class="item-info">
-          <h2 class="item-name">{{ object.name }}</h2>
-
-          <p class="item-status">
-            @if(isSearchMode)
-            Recherche
-            @elseif(!object.type)
-              {{ t('messages.common.give') }}
-            @else
-              {{ t('messages.common.lend') }}
-            @end
-
-            @let(currentKey = catMap[object.categorie] || object.categorie)
-            | {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
-          </p>
-        </div>
-      </a>
-    </div>
+            <p class="item-status">
+              @if(isSearchMode)
+                Recherche
+              @elseif(!object.type)
+                {{ t('messages.common.give') }}
+              @else
+                {{ t('messages.common.lend') }}
+              @end
+              
+              @let(currentKey = catMap[object.categorie] || object.categorie)
+              | {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
+            </p>
+          </div>
+        </a>
+      </div>
     @else
-    {{-- Petit bonus : traduction du message vide --}}
-    <p>{{ t('messages.home.no_objects_found', {}, 'Aucun objet trouvé.') }}</p>
+      {{-- Petit bonus : traduction du message vide --}}
+      <p>
+        {{ t('messages.home.no_objects_found', {}, 'Aucun objet trouvé.') }}
+      </p>
     @end
   </div>
 </main>

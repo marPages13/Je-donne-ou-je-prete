@@ -173,7 +173,6 @@ export default class extends BaseSeeder {
     // // On crée les objets définis ci-dessus
     await DonationObject.createMany(objects)
 
-
     await DonationObjectFactory.createMany(10000)
   }
 }
