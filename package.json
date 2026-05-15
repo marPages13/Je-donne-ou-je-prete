@@ -3,7 +3,23 @@
   "version": "B3.5.7",
   "private": true,
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "LICENCE DE PROPRIÉTÉ INTELLECTUELLE",
+  "authors": [
+    {
+      "name": "Damien Rochat",
+      "email": "dami.scoot3@gmail.com"
+    },
+    {
+      "name": "Gianmarco Ruberti",
+      "email": ""
+    },
+    {
+      "name": "Albert Braimi",
+      "email": ""
+    }
+  ],
+  "project url": "https://www.je-prete-je-donne.ch",
+
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
