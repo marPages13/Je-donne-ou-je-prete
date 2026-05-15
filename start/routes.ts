@@ -14,13 +14,14 @@ import SsoTestController from '#controllers/sso_test_controller'
 
 // --- Public routes ---
 router.get('/choix-login', [AuthController, 'choixLogin']).as('choix_login')
-router.get('/', [DonationObjectsController, 'index']).as('login0')
 router.get('/login', [AuthController, 'login']).as('login')
 router.post('/login', [AuthController, 'authenticate']).as('autenticate')
 router.get('/sso/test', [SsoTestController, 'status']).as('sso.test.status')
 router.get('/sso/login', [SsoTestController, 'loginRedirect']).as('sso.test.login')
 router.get('/sso/callback', [SsoTestController, 'callback']).as('sso.test.callback')
 router.get('/sso/logout', [SsoTestController, 'logout']).as('sso.test.logout')
+
+router.get('/', [DonationObjectsController, 'index']).use(middleware.auth()).as('login0')
 // --- Protected routes ---
 router
   .group(() => {
