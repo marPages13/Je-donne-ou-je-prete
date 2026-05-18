@@ -18,14 +18,7 @@ export default class AuthMiddleware {
       guards?: (keyof Authenticators)[]
     } = {}
   ) {
-    const guards = options.guards || [ctx.auth.defaultGuard]
-
-    for (const guard of guards) {
-      if (await ctx.auth.use(guard).check()) {
-        return next()
-      }
-    }
-
-    return ctx.response.redirect(this.redirectTo, true)
+    await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
+    return next()
   }
 }
