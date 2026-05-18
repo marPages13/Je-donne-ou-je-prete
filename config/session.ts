@@ -24,7 +24,11 @@ const sessionConfig = defineConfig({
   cookie: {
     path: '/',
     httpOnly: true,
-    secure: false,
+    /**
+     * En production (derrière HTTPS), le cookie de session doit être `secure`
+     * sinon la session ne persiste pas et l'utilisateur est redirigé en boucle.
+     */
+    secure: env.get('NODE_ENV') === 'production',
     sameSite: 'lax',
   },
 
@@ -33,7 +37,7 @@ const sessionConfig = defineConfig({
    * variable in order to infer the store name without any
    * errors.
    */
-  store: env.get('SESSION_DRIVER'),
+  store: env.get('SESSION_DRIVER', 'cookie'),
 
   /**
    * List of configured stores. Refer documentation to see
