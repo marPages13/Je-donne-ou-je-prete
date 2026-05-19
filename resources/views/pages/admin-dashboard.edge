@@ -12,16 +12,18 @@
   <div class="admin-grid">
     <div class="left-column">
       <section class="stats-cards">
+        <p class="muted small">Les totaux ci‑dessous ne comptent que les objets actifs : les éléments archivés ou
+          automatiquement supprimés après 120 jours sont exclus.</p>
         <div class="card">
           <h3>Utilisateurs inscrits</h3>
           <p class="big">{{ stats.usersTotal }}</p>
         </div>
         <div class="card">
-          <h3>Objets publiés (dons/prêts)</h3>
+          <h3>Annonces de don/prêt</h3>
           <p class="big">{{ stats.donationsTotal }}</p>
         </div>
         <div class="card">
-          <h3>Objets recherchés</h3>
+          <h3>Recherches en cours</h3>
           <p class="big">{{ stats.chercheTotal }}</p>
         </div>
         <div class="card">
@@ -35,15 +37,18 @@
         <div class="series-table-wrap">
           <table id="users-series">
             <thead>
-              <tr><th>Date</th><th>Inscriptions</th></tr>
+              <tr>
+                <th>Date</th>
+                <th>Inscriptions</th>
+              </tr>
             </thead>
             <tbody>
               @each(row in stats.usersSeriesRows)
-                <tr>
-                  <td>{{ row.label }}</td>
-                  <td>{{ row.count }}</td>
-                  
-                </tr>
+              <tr>
+                <td>{{ row.label }}</td>
+                <td>{{ row.count }}</td>
+
+              </tr>
               @end
             </tbody>
           </table>
@@ -55,25 +60,26 @@
       <section class="feedback-list">
         <h2>Feedback récents</h2>
         @if(feedbacks && feedbacks.length > 0)
-          <div class="feedback-rows">
-            @each(fb in feedbacks)
-              <div class="feedback-row">
-                <div class="feedback-meta">
-                  <strong>{{ fb.name }}</strong>
-                  <div class="muted">{{ fb.email }} • {{ fb.created_at }}</div>
-                </div>
-                <div class="feedback-message">{{ fb.message }}</div>
-                <div class="feedback-actions">
-                  <form action="{{ route('admin.feedbacks.destroy', { id: fb.id }) }}?_method=DELETE" method="POST" onsubmit="return confirm('Supprimer ce feedback ?')">
-                    {{ csrfField() }}
-                    <button type="submit" class="btn-delete">Supprimer</button>
-                  </form>
-                </div>
-              </div>
-            @end
+        <div class="feedback-rows">
+          @each(fb in feedbacks)
+          <div class="feedback-row">
+            <div class="feedback-meta">
+              <strong>{{ fb.name }}</strong>
+              <div class="muted">{{ fb.email }} • {{ fb.created_at }}</div>
+            </div>
+            <div class="feedback-message">{{ fb.message }}</div>
+            <div class="feedback-actions">
+              <form action="{{ route('admin.feedbacks.destroy', { id: fb.id }) }}?_method=DELETE" method="POST"
+                onsubmit="return confirm('Supprimer ce feedback ?')">
+                {{ csrfField() }}
+                <button type="submit" class="btn-delete">Supprimer</button>
+              </form>
+            </div>
           </div>
+          @end
+        </div>
         @else
-          <p>Aucun feedback pour le moment.</p>
+        <p>Aucun feedback pour le moment.</p>
         @end
       </section>
     </aside>

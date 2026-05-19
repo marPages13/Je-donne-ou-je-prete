@@ -95,11 +95,19 @@ node ace migration:fresh --seed
 
 ## 🤝 Contribution
 
-1. Fork du projet
-2. Créer une branche (`git checkout -b feature/ma-feature`)
-3. Commit (`git commit -m "feat: ..."`)
-4. Push (`git push origin feature/ma-feature`)
-5. Ouvrir une Pull Request
+1. Fork du projet.
+2. Créer une branche à partir de la dernière branche `Release` disponible.
+3. Faire ses modifications, puis commit (`git commit -m "feat: ..."`).
+4. Push sur sa branche (`git push origin feature/ma-feature`).
+5. Ouvrir une Pull Request vers la branche `Release` la plus récente.
+
+Les Pull Requests vers `main` sont refusées automatiquement. Merci de toujours partir de la dernière branche `Release` avant de proposer une contribution.
+
+## 🧑‍💻 Contributors
+
+Merci à toutes les personnes qui contribuent au projet.
+
+[![Contributors](https://contrib.rocks/image?repo=BlackAngelTVdev/Je-donne-ou-je-prete)](https://github.com/BlackAngelTVdev/Je-donne-ou-je-prete/graphs/contributors)
 
 ## 👤 Auteurs
 
