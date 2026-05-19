@@ -35,19 +35,14 @@
         <div class="series-table-wrap">
           <table id="users-series">
             <thead>
-              <tr><th>Date</th><th>Inscriptions</th><th>Graphique</th></tr>
+              <tr><th>Date</th><th>Inscriptions</th></tr>
             </thead>
             <tbody>
               @each(row in stats.usersSeriesRows)
                 <tr>
                   <td>{{ row.label }}</td>
                   <td>{{ row.count }}</td>
-                  <td>
-                    <div class="bar-wrap">
-                      <div class="bar" style="width: {{ row.percent }}%"></div>
-                      <span class="bar-label">{{ row.percent }}%</span>
-                    </div>
-                  </td>
+                  
                 </tr>
               @end
             </tbody>
