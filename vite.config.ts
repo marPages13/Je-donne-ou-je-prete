@@ -17,6 +17,7 @@ export default defineConfig({
         'resources/css/home.css',
         'resources/css/login.css',
         'resources/css/variable.css',
+        'resources/css/admin.css',
         'resources/img/jdjp.png',
         'resources/img/logo.png',
         'resources/img/plus.png',
