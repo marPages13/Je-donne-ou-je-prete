@@ -1,0 +1,41 @@
+name: Restrict PRs to main
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-author:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify allowed author
+        shell: bash
+        run: |
+          allowed_authors=(
+            "BlackAngelTVdev"
+            "alberrboyyy"
+            "Gianmarco-Ruberti"
+          )
+
+          author='${{ github.event.pull_request.user.login }}'
+
+          for allowed in "${allowed_authors[@]}"; do
+            if [[ "$author" == "$allowed" ]]; then
+              echo "Author $author is allowed to open PRs to main."
+              exit 0
+            fi
+          done
+
+          echo "PR rejected: $author is not allowed to target main."
+          echo "Allowed authors: ${allowed_authors[*]}"
+          exit 1
