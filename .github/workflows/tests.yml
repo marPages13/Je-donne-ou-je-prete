@@ -1,7 +1,9 @@
 name: CI Tests
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'Release*'
 
 jobs:
   test:
@@ -23,14 +25,12 @@ jobs:
         env:
           NODE_ENV: test
           DB_CONNECTION: sqlite
-          # Valeurs bidon pour passer la validation d'Adonis
           PORT: 3333
           HOST: 0.0.0.0
           APP_KEY: ${{ secrets.APP_KEY || 'votre_cle_secrete_de_32_caracteres_mini' }}
           LOG_LEVEL: info
           SESSION_DRIVER: cookie
           DB_TYPE: sqlite
-          # Même si non utilisés par SQLite, on les met pour le validateur
           DB_HOST: localhost
           DB_PORT: 3306
           DB_USER: root
