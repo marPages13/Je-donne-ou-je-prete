@@ -24,10 +24,16 @@
     @let(toggleLabel = isSearchMode ? t('messages.nav.don') : t('messages.nav.search'))
     @let(toggleRouteName = isSearchMode ? 'donation_objects.index' : 'cherche_objects.index')
 
-    <header>
-      {{-- Logo cliquable vers Home via route nommée --}}
-      <a href="{{ route('donation_objects.index') }}" class="logo">
-        <img src="{{ asset('resources/img/logo.png') }}" alt="Logo" />
+  <header>
+    {{-- Logo cliquable vers Home via route nommée --}}
+    <a href="{{ route('donation_objects.index') }}" class="logo">
+      <img src="{{ asset('resources/img/logo.png') }}" alt="Logo">
+    </a>
+
+    <div class="bouton">
+      <a href="{{ route('contact') }}" class="action-button">Contact</a>
+      <a href="{{ route(toggleRouteName) }}" class="action-button mode-switch-button">
+        {{ toggleLabel }}
       </a>
 
       <div class="bouton">
