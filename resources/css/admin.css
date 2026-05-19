@@ -130,8 +130,64 @@ button {
   background-color: var(--colorButton);
   color: white
 }
+
 span {
   color: white;
+}
+
+/* Feedback list styles */
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px
+}
+
+.feedback-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px
+}
+
+.feedback-row {
+  background: var(--colorform);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(19, 52, 35, 0.04)
+}
+
+.feedback-meta {
+  font-size: 0.9rem;
+  color: black;
+}
+
+.muted {
+  font-size: 0.8rem;
+  color: black;
+  margin-top: 4px
+}
+
+.feedback-message {
+  margin-top: 8px;
+  color: black;
+  white-space: pre-wrap
+}
+
+.feedback-actions {
+  margin-top: 8px
+}
+
+.btn-delete {
+  background: transparent;
+  color: var(--colorButton);
+  border: 1px solid var(--colorButton);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer
+}
+
+.btn-delete:hover {
+  background: var(--colorButton);
+  color: #fff
 }
 
 @media(max-width:900px) {

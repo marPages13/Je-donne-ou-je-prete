@@ -76,6 +76,7 @@ router
     router
       .group(() => {
         router.get('/admin', [AdminController, 'dashboard']).as('admin.dashboard')
+        router.delete('/admin/feedbacks/:id', [ContactsController, 'destroy']).as('admin.feedbacks.destroy')
       })
       .use(middleware.admin())
   })

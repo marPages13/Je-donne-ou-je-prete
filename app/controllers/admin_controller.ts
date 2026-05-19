@@ -45,6 +45,9 @@ export default class AdminController {
 		const max = data.reduce((a, b) => (a > b ? a : b), 0)
 		const usersSeriesRows = labels.map((label, i) => ({ label, count: data[i], percent: max > 0 ? Math.round((data[i] / max) * 100) : 0 }))
 
+		// Fetch recent feedbacks (last 20)
+		const feedbacks = await db.from('feedbacks').select('*').orderBy('created_at', 'desc').limit(20)
+
 		const stats = {
 			usersTotal,
 			donationsTotal,
@@ -53,6 +56,6 @@ export default class AdminController {
 			usersSeriesRows,
 		}
 
-		return view.render('pages/admin-dashboard', { stats })
+		return view.render('pages/admin-dashboard', { stats, feedbacks })
 	}
 }
