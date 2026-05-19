@@ -7,9 +7,14 @@ export default class AdminController {
 	public async dashboard({ view }: HttpContext) {
 		// Totals
 		const usersCountRow = await db.from('users').count('id as total')
-		const donationsCountRow = await db.from('donation_objects').count('id as total')
-		const chercheCountRow = await db.from('cherche_objects').count('id as total')
-		const reservationsCountRow = await db.from('donation_objects').whereNotNull('reserved_by').count('id as total')
+		// Count only non-deleted (active) objects for more relevant stats
+		const donationsCountRow = await db.from('donation_objects').where('is_deleted', false).count('id as total')
+		const chercheCountRow = await db.from('cherche_objects').where('is_deleted', false).count('id as total')
+		const reservationsCountRow = await db
+			.from('donation_objects')
+			.whereNotNull('reserved_by')
+			.where('is_deleted', false)
+			.count('id as total')
 
 		const extractTotal = (row: any) => {
 			const val = row && row[0] && (row[0].total ?? Object.values(row[0])[0])
