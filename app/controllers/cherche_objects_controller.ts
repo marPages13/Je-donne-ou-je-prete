@@ -218,7 +218,7 @@ export default class ChercheObjectsController {
       await sendWithPool((message) => {
         message
           .to(ownerEmail)
-          .from('dami.scoot3@gmail.com')
+          .from('noreply@je-prete-je-donne.ch')
           .subject(`Offre de don : ${item.name}`)
           .htmlView('emails/reservation', {
             item: item.toJSON(),

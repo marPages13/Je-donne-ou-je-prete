@@ -188,7 +188,7 @@ export default class DonationObjectsController {
       await sendWithPool((message) => {
         message
           .to(ownerEmail)
-          .from('dami.scoot3@gmail.com')
+          .from('noreply@je-prete-je-donne.ch')
           .subject(`Demande de réservation : ${item.name}`)
           .htmlView('emails/reservation', {
             item: item.toJSON(),
