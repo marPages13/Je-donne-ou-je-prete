@@ -1,18 +1,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-  @vite(['resources/css/login.css','resources/css/app.css', 'resources/js/app.js'])
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <title>{{ t('messages.auth.login_title') }} | Je donne, je prête</title>
+  @vite(['resources/css/login.css', 'resources/css/app.css', 'resources/js/app.js'])
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <title>
+    {{ t('messages.auth.login_title') }} | Je donne, je prête
+  </title>
 </head>
 
 <body>
   <main>
     @include('partials/flash')
     <form method="get">
-    <img src="{{ asset('resources/img/logo.png') }}">
+      <img src="{{ asset('resources/img/logo.png') }}" />
       <button class="btn btn-outline-info mt-2" formaction="{{ route('sso.test.login') }}" type="submit">
         ETML
       </button>

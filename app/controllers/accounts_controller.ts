@@ -14,7 +14,6 @@ export default class AccountsController {
 
     const userObjects = await user.related('posts').query().where('is_deleted', false)
 
-
     const reservations = await DonationObject.query()
       .where('reservedBy', user.id)
       .whereNot('userId', user.id)
@@ -23,7 +22,7 @@ export default class AccountsController {
     return view.render('pages/account', {
       user: user,
       objects: userObjects,
-      reservations: reservations
+      reservations: reservations,
     })
   }
 }

@@ -15,16 +15,17 @@ import ContactsController from '#controllers/contacts_controller'
 
 // --- Public routes ---
 router.get('/choix-login', [AuthController, 'choixLogin']).as('choix_login')
-router.get('/', [AuthController, 'choixLogin']).as('login0')
 router.get('/login', [AuthController, 'login']).as('login')
 router.post('/login', [AuthController, 'authenticate']).as('autenticate')
 router.get('/sso/test', [SsoTestController, 'status']).as('sso.test.status')
 router.get('/sso/login', [SsoTestController, 'loginRedirect']).as('sso.test.login')
 router.get('/sso/callback', [SsoTestController, 'callback']).as('sso.test.callback')
 router.get('/sso/logout', [SsoTestController, 'logout']).as('sso.test.logout')
+
 // --- Protected routes ---
 router
-  .group(() => {
+.group(() => {
+    router.get('/', [DonationObjectsController, 'index']).as('login0')
     router.get('/account', [AccountsController, 'account']).as('account')
     router.get('/logout', [AuthController, 'logout']).as('logout')
 

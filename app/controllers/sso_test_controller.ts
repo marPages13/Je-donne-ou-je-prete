@@ -35,7 +35,9 @@ export default class SsoTestController {
    * PHASE 2 : Retour du portail SSO & Validation
    */
   public async callback(ctx: HttpContext) {
-    return this.flow().callbackLogin(ctx as any, (payload: SsoResult) => this.findOrCreateSsoUser(payload))
+    return this.flow().callbackLogin(ctx as any, (payload: SsoResult) =>
+      this.findOrCreateSsoUser(payload)
+    )
   }
 
   /**

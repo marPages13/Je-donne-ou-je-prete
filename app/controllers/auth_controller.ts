@@ -1,4 +1,4 @@
-import User from "#models/user"
+import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import Hash from '@adonisjs/core/services/hash'
 
@@ -14,7 +14,7 @@ export default class AuthController {
   //Authentifie l'utilisateur
   public async authenticate({ request, auth, response, session }: HttpContext) {
     const { Username, password } = request.only(['Username', 'password'])
-    
+
     if (!Username || !password) {
       session.flash({ error: 'Veuillez remplir tous les champs' })
       return response.redirect().back()

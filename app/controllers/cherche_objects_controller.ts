@@ -202,7 +202,6 @@ export default class ChercheObjectsController {
       if (item.status === 2) {
         session.flash('error', 'Cet objet est déjà réservé.')
         return response.redirect().back()
-
       }
 
       item.status = 2

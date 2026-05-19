@@ -6,7 +6,6 @@ export default class BodyparserMiddleware {
     /**
      * Middleware logic goes here (before the next call)
      */
-    
 
     /**
      * Call next method in the pipeline and return its output

@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="{{ i18n.locale }}">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-  {{-- Utilisation de asset() pour l'icône : sécurité max pour les chemins --}}
-  <link rel="icon" type="image/x-icon" href="{{ asset('resources/img/logo.png') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ asset('resources/img/logo.png') }}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
-  @vite([`resources/css/${css}`, 'resources/css/app.css', 'resources/js/app.js'])
+    @vite([`resources/css/${css}`, 'resources/css/app.css', 'resources/js/app.js'])
 
-  <title>{{ title || '404' }} | {{ t('messages.test') ? 'Je donne, je prête' : 'Give or Lend' }}</title>
-</head>
+    <title>
+      {{ title || '404' }} | {{ t('messages.test') ? 'Je donne, je prête' : 'Give or Lend' }}
+    </title>
+  </head>
 
-<body>
-  @let(isSearchMode = !!isCherchePage)
-  @let(toggleLabel = isSearchMode ? t('messages.nav.don') : t('messages.nav.search'))
-  @let(toggleRouteName = isSearchMode ? 'donation_objects.index' : 'cherche_objects.index')
+  <body>
+    @let(isSearchMode = !!isCherchePage)
+    @let(toggleLabel = isSearchMode ? t('messages.nav.don') : t('messages.nav.search'))
+    @let(toggleRouteName = isSearchMode ? 'donation_objects.index' : 'cherche_objects.index')
 
   <header>
     {{-- Logo cliquable vers Home via route nommée --}}
@@ -32,42 +36,47 @@
         {{ toggleLabel }}
       </a>
 
-      {{-- Ajouter un objet --}}
-      <a href="{{ route('donation_objects.create') }}" class="action-button add-button">
+      <div class="bouton">
+        <a href="{{ route(toggleRouteName) }}" class="action-button mode-switch-button">
+          {{ toggleLabel }}
+      </a>
+
+        {{-- Ajouter un objet --}}
+        <a href="{{ route('donation_objects.create') }}" class="action-button add-button">
+          {{ t('messages.nav.add') }}
+      </a>
+
+        {{-- Compte utilisateur --}}
+        <a href="{{ route('account') }}" class="textdeco account-link">
+          <img src="{{ asset('resources/img/user.svg') }}" class="imgbutton" alt="User" />
+        </a>
+
+        {{-- Sélecteur de langue Desktop --}}
+        <div class="lang-switcher header-lang-switcher">
+          <a href="?lang=fr" class="lang-link {{ i18n.locale === 'fr' ? 'active' : '' }}">FR</a>
+          <span>|</span>
+          <a href="?lang=en" class="lang-link {{ i18n.locale === 'en' ? 'active' : '' }}">EN</a>
+        </div>
+      </div>
+    </header>
+
+    {{-- Barre d'action mobile --}}
+    <div class="bottom-action-bar">
+      <a href="{{ route('donation_objects.create') }}" class="action-button">
         {{ t('messages.nav.add') }}
-      </a>
+    </a>
 
-      {{-- Compte utilisateur --}}
-      <a href="{{ route('account') }}" class="textdeco account-link">
-        <img src="{{ asset('resources/img/user.svg') }}" class="imgbutton" alt="User">
-      </a>
+      <a href="{{ route(toggleRouteName) }}" class="action-button">
+        {{ toggleLabel }}
+    </a>
 
-      {{-- Sélecteur de langue Desktop --}}
-      <div class="lang-switcher header-lang-switcher">
+      <a href="{{ route('account') }}" class="action-button">
+        {{ t('messages.nav.account') }}
+    </a>
+
+      <div class="lang-switcher">
         <a href="?lang=fr" class="lang-link {{ i18n.locale === 'fr' ? 'active' : '' }}">FR</a>
         <span>|</span>
         <a href="?lang=en" class="lang-link {{ i18n.locale === 'en' ? 'active' : '' }}">EN</a>
       </div>
     </div>
-  </header>
-
-  {{-- Barre d'action mobile --}}
-  <div class="bottom-action-bar">
-    <a href="{{ route('donation_objects.create') }}" class="action-button">
-      {{ t('messages.nav.add') }}
-    </a>
-
-    <a href="{{ route(toggleRouteName) }}" class="action-button">
-      {{ toggleLabel }}
-    </a>
-
-    <a href="{{ route('account') }}" class="action-button">
-      {{ t('messages.nav.account') }}
-    </a>
-
-    <div class="lang-switcher">
-      <a href="?lang=fr" class="lang-link {{ i18n.locale === 'fr' ? 'active' : '' }}">FR</a>
-      <span>|</span>
-      <a href="?lang=en" class="lang-link {{ i18n.locale === 'en' ? 'active' : '' }}">EN</a>
-    </div>
-  </div>
