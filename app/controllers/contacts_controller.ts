@@ -35,5 +35,25 @@ export default class FeedbacksController {
     // 4. Notification et redirection
     session.flash('success', 'Merci pour votre feedback ! Il a bien été enregistré.')
     return response.redirect().toPath('/home') // Redirection vers l'accueil ou ailleurs
+    
+  }
+
+  /**
+   * Supprime un feedback (accessible aux admins via middleware)
+   */
+  async destroy({ params, response, session, auth }: HttpContext) {
+    // On vérifie l'utilisateur (doit être connecté) — route admin protègera le fait qu'il soit admin
+    await auth.check()
+
+    const id = params.id
+    const feedback = await Feedback.find(id)
+    if (!feedback) {
+      session.flash('error', 'Feedback introuvable')
+      return response.redirect().toPath('/admin')
+    }
+
+    await feedback.delete()
+    session.flash('success', 'Feedback supprimé')
+    return response.redirect().toPath('/admin')
   }
 }

@@ -52,9 +52,29 @@
     </div>
 
     <aside class="right-column">
-      <section class="feedback-placeholder">
-        <h2>Feedback</h2>
-        <p>Section feedback — arrivera via un autre controller plus tard.</p>
+      <section class="feedback-list">
+        <h2>Feedback récents</h2>
+        @if(feedbacks && feedbacks.length > 0)
+          <div class="feedback-rows">
+            @each(fb in feedbacks)
+              <div class="feedback-row">
+                <div class="feedback-meta">
+                  <strong>{{ fb.name }}</strong>
+                  <div class="muted">{{ fb.email }} • {{ fb.created_at }}</div>
+                </div>
+                <div class="feedback-message">{{ fb.message }}</div>
+                <div class="feedback-actions">
+                  <form action="{{ route('admin.feedbacks.destroy', { id: fb.id }) }}?_method=DELETE" method="POST" onsubmit="return confirm('Supprimer ce feedback ?')">
+                    {{ csrfField() }}
+                    <button type="submit" class="btn-delete">Supprimer</button>
+                  </form>
+                </div>
+              </div>
+            @end
+          </div>
+        @else
+          <p>Aucun feedback pour le moment.</p>
+        @end
       </section>
     </aside>
   </div>
