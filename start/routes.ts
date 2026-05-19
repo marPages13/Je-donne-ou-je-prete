@@ -11,6 +11,7 @@ import AuthController from '#controllers/auth_controller'
 import AccountsController from '#controllers/accounts_controller'
 import ChercheObjectsController from '#controllers/cherche_objects_controller'
 import SsoTestController from '#controllers/sso_test_controller'
+import AdminController from '#controllers/admin_controller'
 import ContactsController from '#controllers/contacts_controller'
 
 // --- Public routes ---
@@ -71,6 +72,12 @@ router
           .as('cherche_item.republish')
       })
       .prefix('/item/cherche')
+    // Admin dashboard - accessible only to authenticated admins
+    router
+      .group(() => {
+        router.get('/admin', [AdminController, 'dashboard']).as('admin.dashboard')
+      })
+      .use(middleware.admin())
   })
   .use(middleware.auth())
 
