@@ -1,0 +1,33 @@
+@let(css = 'edit.css')
+@include('partials/header')
+<main>
+  <h1>Laisser un feedback</h1>
+
+  <form action="/contact" method="POST">
+    {{ csrfField() }}
+
+    {{-- Information utilisateur (Lecture seule) --}}
+    <div class="field-group">
+      <label>Auteur du feedback :</label>
+      <p style="color: #333; font-weight: normal; margin-top: 5px;">
+        {{ auth.user.Username }} <span style="color: #666; font-size: 0.9em;">({{ auth.user.email }})</span>
+      </p>
+    </div>
+
+    {{-- Champ Message seul --}}
+    <div class="field-group">
+      <label for="message">Description détaillée du retour :</label>
+      <textarea id="message" name="message" rows="6" placeholder="Décrivez votre expérience, suggestion ou problème rencontré...">{{ old('message') || '' }}</textarea>
+      @if(flashMessages.has('errors.message'))
+        <p class="errors">{{ flashMessages.get('errors.message') }}</p>
+      @endif
+    </div>
+
+    {{-- Zone d'actions inférieure --}}
+    <div class="form-actions-container">
+      <button type="submit" class="btn-submit-feedback">Envoyer le feedback</button>
+      <a href="/home" class="btn-cancel">Annuler</a>
+    </div>
+  </form>
+</main>
+@include('partials/footer')

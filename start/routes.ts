@@ -12,6 +12,7 @@ import AccountsController from '#controllers/accounts_controller'
 import ChercheObjectsController from '#controllers/cherche_objects_controller'
 import SsoTestController from '#controllers/sso_test_controller'
 import AdminController from '#controllers/admin_controller'
+import ContactsController from '#controllers/contacts_controller'
 
 // --- Public routes ---
 router.get('/choix-login', [AuthController, 'choixLogin']).as('choix_login')
@@ -28,6 +29,10 @@ router
     router.get('/', [DonationObjectsController, 'index']).as('login0')
     router.get('/account', [AccountsController, 'account']).as('account')
     router.get('/logout', [AuthController, 'logout']).as('logout')
+
+    // contact
+    router.get('/contact', [ContactsController, 'index']).as('contact')
+    router.post('/contact', [ContactsController, 'store']).as('contact.store')
 
     // DonationObjects routes
     router.get('/home', [DonationObjectsController, 'index']).as('donation_objects.index')
