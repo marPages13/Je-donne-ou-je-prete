@@ -12,6 +12,7 @@ import { DateTime } from 'luxon'
 import CherchePolicy from '#policies/cherche_policy'
 import { purgeSoftDeletedObjects } from '#services/objects_retention_service'
 import { sendWithPool } from '#services/mail_pool'
+import env from '#start/env'
 
 export default class ChercheObjectsController {
   /**
@@ -216,9 +217,10 @@ export default class ChercheObjectsController {
 
       // ENVOI DU MAIL
       await sendWithPool((message) => {
+        const fromAddress = (env.get('SMTP_USERNAME') || env.get('MAIL_FROM_ADDRESS') || '').toString().trim()
         message
           .to(ownerEmail)
-          .from('noreply@je-prete-je-donne.ch')
+          .from(fromAddress)
           .subject(`Offre de don : ${item.name}`)
           .htmlView('emails/reservation', {
             item: item.toJSON(),

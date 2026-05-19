@@ -13,6 +13,7 @@ import { DateTime } from 'luxon'
 import DonationPolicy from '#policies/donation_policy'
 import { sendWithPool } from '#services/mail_pool'
 import { purgeSoftDeletedObjects } from '#services/objects_retention_service'
+import env from '#start/env'
 
 export default class DonationObjectsController {
   /**
@@ -186,9 +187,10 @@ export default class DonationObjectsController {
       }
 
       await sendWithPool((message) => {
+        const fromAddress = (env.get('SMTP_USERNAME') || env.get('MAIL_FROM_ADDRESS') || '').toString().trim()
         message
           .to(ownerEmail)
-          .from('noreply@je-prete-je-donne.ch')
+          .from(fromAddress)
           .subject(`Demande de réservation : ${item.name}`)
           .htmlView('emails/reservation', {
             item: item.toJSON(),
