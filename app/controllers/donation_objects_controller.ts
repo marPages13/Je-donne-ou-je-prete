@@ -34,7 +34,8 @@ export default class DonationObjectsController {
       .orderBy('donation_objects.urgent', 'desc')
 
     if (isExternalUser) {
-      query = query.whereRaw('donation_objects.created_at <= DATE_SUB(NOW(), INTERVAL 3 MONTH)')
+      const externalCutoff = DateTime.now().minus({ months: 3 }).toFormat('yyyy-MM-dd HH:mm:ss')
+      query = query.whereRaw('donation_objects.created_at <= ?', [externalCutoff])
     }
 
     query = query.orderBy('donation_objects.created_at', 'desc')
