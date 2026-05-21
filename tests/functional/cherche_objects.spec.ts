@@ -7,12 +7,16 @@ import db from '@adonisjs/lucid/services/db'
 
 test.group('ChercheObjects - fonctionnalités critiques', (group) => {
   group.setup(async () => {
+    await db.from('feedbacks').delete()
     await db.from('cherche_objects').delete()
+    await db.from('donation_objects').delete()
     await db.from('users').delete()
   })
 
   group.teardown(async () => {
+    await db.from('feedbacks').delete()
     await db.from('cherche_objects').delete()
+    await db.from('donation_objects').delete()
     await db.from('users').delete()
   })
 
