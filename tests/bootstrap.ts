@@ -13,7 +13,7 @@ import { ApiClient } from '@japa/api-client'
 // Add a minimal shim only if the session plugin didn't register `withSession`
 // The real plugin (`@adonisjs/session`) registers a richer implementation
 if (typeof (ApiRequest.prototype as any).withSession !== 'function') {
-  ApiRequest.macro('withSession', function (session: Record<string, any>) {
+  ApiRequest.macro('withSession', function (this: any, session: Record<string, any>) {
     // Priorité à withPlainCookie / withEncryptedCookie si fournis par le plugin Adonis
     // @ts-ignore
     if (typeof this.withPlainCookie === 'function') {
@@ -81,7 +81,7 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
 }
 
 // Diagnostics: log sessionClient and cookies for troubleshooting CSRF/session issues
-ApiClient.onRequest((request) => {
+ApiClient.onRequest((request: ApiRequest) => {
   request.setup(async () => {
     try {
       // @ts-ignore
@@ -98,7 +98,7 @@ ApiClient.onRequest((request) => {
     return async () => { }
   })
 
-  request.teardown(async (response) => {
+  request.teardown(async (response: any) => {
     try {
       console.log('[TEST-DBG] response.cookies =', response.cookies)
       // @ts-ignore
