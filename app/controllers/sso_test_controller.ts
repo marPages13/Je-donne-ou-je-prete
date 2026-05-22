@@ -58,13 +58,16 @@ export default class SsoTestController {
   private async findOrCreateSsoUser(payload: SsoResult) {
     const email = payload.email?.trim().toLowerCase() || null
     const usernameFromSso = payload.username?.trim() || ''
+    // Prefer using the SSO email local-part to build the Username
+    const usernameSource = email || usernameFromSso
+    const normalizedUsernameFromSso = usernameSource ? this.normalizeUsername(usernameSource) : ''
     const extainre = this.isExternalUserFromRoles(payload.raw?.roles)
     console.log('SSO Payload:', { payload })
 
-    // 1. Recherche (Email d'abord, puis Username)
+    // 1. Recherche (Email d'abord, puis Username normalisé)
     let user = email ? await User.findBy('email', email) : null
-    if (!user && usernameFromSso) {
-      user = await User.findBy('Username', usernameFromSso)
+    if (!user && normalizedUsernameFromSso) {
+      user = await User.findBy('Username', normalizedUsernameFromSso)
     }
 
     if (user) {
@@ -72,15 +75,15 @@ export default class SsoTestController {
       if (email && user.email !== email) {
         user.email = email
       }
-      if (usernameFromSso && user.Username !== usernameFromSso) {
-        user.Username = usernameFromSso
+      if (usernameFromSso && user.Username !== normalizedUsernameFromSso) {
+        user.Username = normalizedUsernameFromSso
       }
       await user.save()
       return user
     }
 
     // 2. Création si nouveau
-    const baseUsername = this.normalizeUsername(email || usernameFromSso)
+    const baseUsername = normalizedUsernameFromSso || this.normalizeUsername(usernameFromSso)
     const username = await this.makeUniqueUsername(baseUsername)
     const password = await Hash.make(randomBytes(32).toString('hex'))
 
