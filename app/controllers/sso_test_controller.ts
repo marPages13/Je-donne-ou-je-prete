@@ -102,9 +102,9 @@ export default class SsoTestController {
     if (roles.length === 0) {
       return false
     }
-
-    const firstRole = roles[0] || ''
-    return !firstRole.startsWith('UUS_ETML')
+    //regex pour détecter les rôles commençant par UUS_ETML suivi d'un underscore ou de la fin de la chaîne
+    const hasEtmlRole = roles.some((role) => /^UUS_ETML(?:_|$)/.test(role))
+    return !hasEtmlRole
   }
 
   private normalizeRoles(rawRoles?: string | string[]) {
