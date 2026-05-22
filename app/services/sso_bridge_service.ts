@@ -4,6 +4,8 @@ import env from '#start/env'
 // On définit l'interface pour avoir l'autocomplétion et éviter les erreurs
 interface SsoBridge {
   generateCorrelationId(): Promise<string>
+  buildLoginRedirectUrl(correlationId: string, callbackUrl: string): string
+  buildLogoutRedirectUrl(redirectUrl: string): string
   retrieveLoginInfo(correlationId: string): Promise<{
     email: string
     username: string
@@ -27,7 +29,6 @@ export function createBridgeFromEnv(): SsoBridge {
     throw new Error('SSO_PORTAL manquante dans le .env')
   }
 
-  // @ts-ignore - On cast pour utiliser les méthodes du SDK
   return ssoBridgePackage.createSSOBridge({
     apiKey: apiKey,
     ssoPortal: ssoPortal,
@@ -48,7 +49,7 @@ function normalizeSsoPortal(raw?: string) {
 
 export function createAdonisSsoFlowFromEnv(options: any = {}) {
   const bridge = createBridgeFromEnv() as any
-  return (ssoBridgePackage as any).createAdonisSSOFlow(bridge, {
+  const config = {
     callbackPath: '/sso/callback',
     afterLogoutPath: '/',
     loginPath: '/sso/login',
@@ -57,5 +58,80 @@ export function createAdonisSsoFlowFromEnv(options: any = {}) {
     failureRedirect: '/login',
     authGuard: 'web',
     ...options,
-  })
+  }
+
+  return {
+    async status(ctx: any) {
+      return ctx.response.send({
+        ok: true,
+        loginPath: config.loginPath,
+        callbackPath: config.callbackPath,
+        logoutPath: config.logoutPath,
+        successRedirect: config.successRedirect,
+        failureRedirect: config.failureRedirect,
+        authGuard: config.authGuard,
+      })
+    },
+
+    async loginRedirect({ response, request, session }: any) {
+      const correlationId = await bridge.generateCorrelationId()
+      writeSession(session, 'sso_bridge_correlation_id', correlationId)
+
+      const callbackUrl = buildAbsoluteUrl(request, config.callbackPath)
+      const redirectUrl = bridge.buildLoginRedirectUrl(correlationId, callbackUrl)
+
+      return response.redirect(redirectUrl)
+    },
+
+    async callbackLogin(ctx: any, createUser: (payload: any) => Promise<any>) {
+      const correlationId = readSession(ctx.session, 'sso_bridge_correlation_id')
+      const ssoResult = await bridge.retrieveLoginInfo(correlationId)
+      const payload = {
+        ...ssoResult,
+        correlationId,
+        raw: ssoResult,
+      }
+
+      if (!ssoResult.isSuccess()) {
+        return ctx.response.redirect(config.failureRedirect)
+      }
+
+      const user = await createUser(payload)
+      await ctx.auth.use(config.authGuard).login(user)
+
+      return ctx.response.redirect(config.successRedirect)
+    },
+
+    async logout({ auth, response, request }: any) {
+      await auth.use(config.authGuard).logout()
+
+      const redirectUrl = buildAbsoluteUrl(request, config.afterLogoutPath)
+      return response.redirect(bridge.buildLogoutRedirectUrl(redirectUrl))
+    },
+  }
+}
+
+function readSession(session: any, key: string) {
+  if (typeof session?.get === 'function') {
+    return session.get(key)
+  }
+
+  return undefined
+}
+
+function writeSession(session: any, key: string, value: string) {
+  if (typeof session?.put === 'function') {
+    session.put(key, value)
+    return
+  }
+
+  if (typeof session?.set === 'function') {
+    session.set(key, value)
+  }
+}
+
+function buildAbsoluteUrl(request: any, path: string) {
+  const protocol = typeof request?.protocol === 'function' ? request.protocol() : 'http'
+  const host = typeof request?.host === 'function' ? request.host() : 'localhost'
+  return new URL(`${protocol}://${host}${path}`).toString()
 }

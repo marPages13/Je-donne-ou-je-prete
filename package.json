@@ -1,6 +1,6 @@
 {
   "name": "je-donne_je-prete",
-  "version": "B4.0.0",
+  "version": "B4.1.0",
   "private": true,
   "type": "module",
   "license": "LICENCE DE PROPRIÉTÉ INTELLECTUELLE",
@@ -18,12 +18,11 @@
       "email": "albertbraimi@gmail.com"
     }
   ],
-
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
     "dev": "node ace serve --watch --no-clear",
-    "test": "node ace test",
+    "test": "node ace test --no-assets",
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
@@ -52,6 +51,7 @@
     "@adonisjs/http-server": "^7.8.0",
     "@adonisjs/prettier-config": "^1.4.4",
     "@adonisjs/tsconfig": "^1.4.1",
+    "@japa/api-client": "^3.0.4",
     "@japa/assert": "^4.0.1",
     "@japa/plugin-adonisjs": "^4.0.0",
     "@japa/runner": "^4.2.0",
