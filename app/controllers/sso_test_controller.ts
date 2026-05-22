@@ -61,8 +61,13 @@ export default class SsoTestController {
     // Prefer using the SSO email local-part to build the Username
     const usernameSource = email || usernameFromSso
     const normalizedUsernameFromSso = usernameSource ? this.normalizeUsername(usernameSource) : ''
-    const extainre = this.isExternalUserFromRoles(payload.raw?.roles)
-    console.log('SSO Payload:', { payload })
+    // normaliser une seule fois les rôles, déterminer si l'utilisateur est ETML
+    const roles = this.normalizeRoles(payload.raw?.roles)
+    const hasEtmlRole = roles.some((role) => /^UUS_ETML(?:_|$)/.test(role))
+    // `extainre` as boolean: true = externe, false = interne
+    const extainre = !hasEtmlRole
+    const origin = this.extractSsoOrigin(payload.raw)
+    console.log('SSO origin:', { hasEtmlRole, origin, roles, extainre })
 
     // 1. Recherche (Email d'abord, puis Username normalisé)
     let user = email ? await User.findBy('email', email) : null
@@ -96,17 +101,6 @@ export default class SsoTestController {
     })
   }
 
-  private isExternalUserFromRoles(rawRoles?: string | string[]) {
-    const roles = this.normalizeRoles(rawRoles)
-
-    if (roles.length === 0) {
-      return false
-    }
-    //regex pour détecter les rôles commençant par UUS_ETML suivi d'un underscore ou de la fin de la chaîne
-    const hasEtmlRole = roles.some((role) => /^UUS_ETML(?:_|$)/.test(role))
-    return !hasEtmlRole
-  }
-
   private normalizeRoles(rawRoles?: string | string[]) {
     if (Array.isArray(rawRoles)) {
       return rawRoles.map((role) => String(role).trim()).filter(Boolean)
@@ -133,6 +127,25 @@ export default class SsoTestController {
     }
 
     return []
+  }
+
+  private extractSsoOrigin(raw?: { roles?: string | string[]; [key: string]: unknown }) {
+    if (!raw || typeof raw !== 'object') return null
+
+    const keys = ['location', 'place', 'site', 'org', 'organisation', 'organization', 'department', 'origin', 'city', 'commune']
+    for (const k of keys) {
+      const v = (raw as any)[k]
+      if (typeof v === 'string' && v.trim()) return v.trim()
+    }
+
+    // Fallback: extraire l'étiquette UUS depuis les rôles si présente
+    const roles = this.normalizeRoles((raw as any).roles)
+    for (const role of roles) {
+      const m = role.match(/^UUS_([A-Z0-9]+)/i)
+      if (m) return `UUS:${m[1]}`
+    }
+
+    return null
   }
 
   private normalizeUsername(rawEmail: string) {
