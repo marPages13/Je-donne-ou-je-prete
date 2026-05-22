@@ -69,7 +69,23 @@ form button {
 form button:hover {
   background-color: var(--colorButton);
 }
-
+form button.edu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+form button.edu img {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  position: static;
+  transform: none;
+}
+form button.edu span {
+  margin: 0;
+  line-height: 1;
+}
 @media (max-width: 600px) {
   form {
     max-width: none;

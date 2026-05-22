@@ -18,8 +18,9 @@
     @include('partials/flash')
     <form method="get">
       <img src="{{ asset('resources/img/logo.png') }}" />
-      <button class="btn btn-outline-info mt-2" formaction="{{ route('sso.test.login') }}" type="submit">
-        ETML
+      <button class="btn btn-outline-info mt-2 edu" formaction="{{ route('sso.test.login') }}" type="submit">
+        <img src="https://account.microsoft.com/favicon.ico" alt="Edu Vaud" />
+        <span>Edu Vaud</span>
       </button>
       <button class="btn btn-outline-info mt-2" formaction="{{ route('login') }}" type="submit">
         Externe
