@@ -18,7 +18,6 @@
       "email": "albertbraimi@gmail.com"
     }
   ],
-
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",

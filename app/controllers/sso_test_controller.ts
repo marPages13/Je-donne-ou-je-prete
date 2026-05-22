@@ -9,6 +9,11 @@ type SsoResult = {
   username: string
   error?: string
   isSuccess: () => boolean
+  correlationId?: string
+  raw?: {
+    roles?: string | string[]
+    [key: string]: unknown
+  }
 }
 
 export default class SsoTestController {
@@ -53,6 +58,8 @@ export default class SsoTestController {
   private async findOrCreateSsoUser(payload: SsoResult) {
     const email = payload.email?.trim().toLowerCase() || null
     const usernameFromSso = payload.username?.trim() || ''
+    const extainre = this.isExternalUserFromRoles(payload.raw?.roles)
+    console.log('SSO Payload:', { payload })
 
     // 1. Recherche (Email d'abord, puis Username)
     let user = email ? await User.findBy('email', email) : null
@@ -60,7 +67,17 @@ export default class SsoTestController {
       user = await User.findBy('Username', usernameFromSso)
     }
 
-    if (user) return user
+    if (user) {
+      user.extainre = extainre
+      if (email && user.email !== email) {
+        user.email = email
+      }
+      if (usernameFromSso && user.Username !== usernameFromSso) {
+        user.Username = usernameFromSso
+      }
+      await user.save()
+      return user
+    }
 
     // 2. Création si nouveau
     const baseUsername = this.normalizeUsername(email || usernameFromSso)
@@ -71,9 +88,48 @@ export default class SsoTestController {
       Username: username,
       email,
       password,
-      extainre: false,
+      extainre,
       isadmin: false,
     })
+  }
+
+  private isExternalUserFromRoles(rawRoles?: string | string[]) {
+    const roles = this.normalizeRoles(rawRoles)
+
+    if (roles.length === 0) {
+      return false
+    }
+
+    const firstRole = roles[0] || ''
+    return !firstRole.startsWith('UUS_ETML')
+  }
+
+  private normalizeRoles(rawRoles?: string | string[]) {
+    if (Array.isArray(rawRoles)) {
+      return rawRoles.map((role) => String(role).trim()).filter(Boolean)
+    }
+
+    if (typeof rawRoles === 'string') {
+      const trimmed = rawRoles.trim()
+      if (!trimmed) {
+        return []
+      }
+
+      try {
+        const parsed = JSON.parse(trimmed)
+        if (Array.isArray(parsed)) {
+          return parsed.map((role) => String(role).trim()).filter(Boolean)
+        }
+      } catch {
+        return trimmed
+          .replace(/^\[|\]$/g, '')
+          .split(',')
+          .map((role) => role.replace(/^"|"$/g, '').trim())
+          .filter(Boolean)
+      }
+    }
+
+    return []
   }
 
   private normalizeUsername(rawEmail: string) {
