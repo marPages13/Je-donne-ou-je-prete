@@ -10,10 +10,9 @@ export default defineConfig({
        */
       entrypoints: [
         'resources/css/account.css',
-        'resources/css/ajout.css',
+        'resources/css/object-form.css',
         'resources/css/app.css',
         'resources/css/details.css',
-        'resources/css/edit.css',
         'resources/css/home.css',
         'resources/css/login.css',
         'resources/css/variable.css',
