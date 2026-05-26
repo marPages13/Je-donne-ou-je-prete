@@ -3,8 +3,8 @@
 :root {
   --admin-bg: var(--colorback);
   --card-bg: var(--colorform);
-  --accent: var(--colorButton);
-  --muted: #57734d;
+  --accent: var(black);
+  --muted: var(black);
   --border: rgba(19, 52, 35, 0.06);
 }
 
@@ -14,7 +14,7 @@
 
 body {
   font-family: Inter, Roboto, system-ui, -apple-system, 'Segoe UI', Arial;
-  color: #12221a;
+  color: var(black);
 }
 
 .admin-container {
@@ -71,7 +71,7 @@ body {
 
 .card h3 {
   font-size: 0.95rem;
-  color: #16321e;
+  color: black;
   margin: 0; /* Enlève la marge pour un alignement vertical parfait */
 }
 
@@ -107,7 +107,7 @@ body {
   text-align: left;
   padding: 10px 12px;
   font-weight: 700;
-  color: #16321e;
+  color: black;
 }
 
 #users-series td,
@@ -117,12 +117,12 @@ body {
 }
 
 #users-series tbody tr:hover {
-  background: #fbfdfb;
+  background: var(--colorItem);
 }
 
-.feedback-list h2 {
+feedback-list h2 {
   margin-bottom: 8px;
-  color: #16321e;
+  color: var(--colorButton);
 }
 
 .feedback-row {
@@ -132,9 +132,9 @@ body {
   border-radius: 10px;
 }
 
-.feedback-meta strong {
+feedback-meta strong {
   display: block;
-  color: #16321e;
+  color: var(--colorButton);
 }
 
 .feedback-meta .muted {
@@ -144,7 +144,7 @@ body {
 
 .feedback-message {
   margin-top: 8px;
-  color: #2b3b2f;
+  color: var(--colorButton);
   white-space: pre-wrap;
 }
 

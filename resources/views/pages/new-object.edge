@@ -1,5 +1,5 @@
 @let(title = t('messages.add_item.title'))
-@let(css = 'ajout.css')
+@let(css = 'object-form.css')
 @include('partials/header')
 
 @let(catMap = {
@@ -30,7 +30,7 @@
     {{ csrfField() }}
     <input type="hidden" id="hiddenMode" name="mode" value="" />
 
-    <div>
+    <div class="field-group">
       @!component('components/input', {
       name : 'image',
       label : t('messages.add_item.image_label'),
@@ -40,11 +40,9 @@
       <img class="CACHER" id="imageDisplay" src="" alt="{{ t('messages.add_item.image_preview_alt') }}" />
     </div>
 
-    <br />
-
     {{-- Nom de l'objet --}}
     <div class="field-group">
-      <label for="name">{{ t('messages.add_item.name_label') }}</label>      <br />
+      <label for="name">{{ t('messages.add_item.name_label') }}</label>
       <input
         type="text"
         id="name"
@@ -58,11 +56,9 @@
       @endif
     </div>
 
-    <br />
-
     {{-- Description --}}
     <div class="field-group">
-      <label for="description">{{ t('messages.add_item.desc_label') }}</label>      <br />
+      <label for="description">{{ t('messages.add_item.desc_label') }}</label>
       <textarea
         id="description"
         name="description"
@@ -75,8 +71,6 @@
       @endif
     </div>
 
-    <br />
-
     <div class="field-group">
       <label for="IsUrgent">{{ t('messages.add_item.urgent_label') }}</label>
       <input type="checkbox" id="IsUrgent" name="IsUrgent" value="1" />
@@ -84,7 +78,7 @@
 
     {{-- Catégorie --}}
     <div class="field-group">
-      <label for="categorie">{{ t('messages.add_item.cat_label') }}</label>      <br />
+      <label for="categorie">{{ t('messages.add_item.cat_label') }}</label>
       <select name="categorie" id="categorie" required>
         <option value="" disabled {{ !old('categorie') ? 'selected' : '' }}>
           {{ t('messages.add_item.cat_select') }}
@@ -99,11 +93,9 @@
       </select>
     </div>
 
-    <br />
-
     {{-- Type (Don/Prêt/Recherche) --}}
     <div class="field-group">
-      <label for="mode">{{ t('messages.add_item.mode_label') }}</label>      <br />
+      <label for="mode">{{ t('messages.add_item.mode_label') }}</label>
       <select id="mode" name="mode" required>
         <option value="">
           {{ t('messages.add_item.mode_select') }}
@@ -117,11 +109,9 @@
       </select>
     </div>
 
-    <br />
-
     {{-- Type (Don/Prêt) - Visible uniquement en mode donation --}}
     <div id="type_section" class="field-group" style="display: none;">
-      <label for="type">{{ t('messages.add_item.status_label') }}</label>      <br />
+      <label for="type">{{ t('messages.add_item.status_label') }}</label>
       <select id="type" name="type">
         <option value="">
           {{ t('messages.add_item.status_select') }}
@@ -134,8 +124,6 @@
         </option>
       </select>
     </div>
-
-    <br />
 
     {{-- Section Dates --}}
     <div id="availability_section" class="field-group" style="display: none;">
@@ -156,7 +144,6 @@
 
       {{-- Masqué si c'est un Don --}}
       <div id="until_field">
-        <br />
         <div class="field">
           <label for="available_until">{{ t('messages.add_item.until') }}</label>
           <input
@@ -169,16 +156,12 @@
       </div>
     </div>
 
-    <br />
-
-    <div>
+    <div class="actions">
       <button type="submit">
         {{ t('messages.add_item.submit') }}
       </button>
       {{-- Lien retour vers Home via route() --}}
-      <p>
-        <a href="{{ route('donation_objects.index') }}">{{ t('messages.add_item.back') }}</a>
-      </p>
+      <a href="{{ route('donation_objects.index') }}" class="btn-cancel">{{ t('messages.add_item.back') }}</a>
     </div>
   </form>
 </main>

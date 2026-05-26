@@ -1,6 +1,7 @@
-@let(css = 'edit.css')
+@let(css = 'object-form.css')
 @include('partials/header')
 <main>
+  @include('partials/flash')
   <h1>Laisser un feedback</h1>
 
   <form action="/contact" method="POST">
@@ -9,9 +10,7 @@
     {{-- Information utilisateur (Lecture seule) --}}
     <div class="field-group">
       <label>Auteur du feedback :</label>
-      <p style="color: #333; font-weight: normal; margin-top: 5px;">
-        {{ auth.user.Username }} <span style="color: #666; font-size: 0.9em;">({{ auth.user.email }})</span>
-      </p>
+      <p>{{ auth.user.Username }} ({{ auth.user.email }})</p>
     </div>
 
     {{-- Champ Message seul --}}
@@ -24,7 +23,7 @@
     </div>
 
     {{-- Zone d'actions inférieure --}}
-    <div class="form-actions-container">
+    <div class="actions">
       <button type="submit" class="btn-submit-feedback">Envoyer le feedback</button>
       <a href="/home" class="btn-cancel">Annuler</a>
     </div>

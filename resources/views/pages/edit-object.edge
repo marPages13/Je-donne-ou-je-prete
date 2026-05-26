@@ -1,5 +1,5 @@
 @let(title = t('messages.edit_item.title'))
-@let(css = 'edit.css')
+@let(css = 'object-form.css')
 @include('partials/header')
 
 @let(catMap = {
@@ -45,7 +45,7 @@
       <!-- Champ _method supprimé, tout passe en POST -->
 
       {{-- Section Image --}}
-      <div>
+      <div class="field-group">
         @!component('components/input', {
         name : 'image',
         label : t('messages.edit_item.image_placeholder'),
@@ -59,11 +59,9 @@
         @endif
       </div>
 
-      <br />
-
       {{-- Nom --}}
       <div class="field-group">
-        <label for="name">{{ t('messages.add_item.name_label') }}</label>        <br />
+        <label for="name">{{ t('messages.add_item.name_label') }}</label>
         <input id="name" type="text" name="name" value="{{ old('name') || object.name }}" required />
         @if(flashMessages.has('errors.name'))
           <p class="errors">
@@ -72,11 +70,9 @@
         @endif
       </div>
 
-      <br />
-
       {{-- Description --}}
       <div class="field-group">
-        <label for="description">{{ t('messages.add_item.desc_label') }}</label>        <br />
+        <label for="description">{{ t('messages.add_item.desc_label') }}</label>
         <textarea id="description" name="description" rows="5" required>{{ old('description') || object.description }}</textarea>
         @if(flashMessages.has('errors.description'))
           <p class="errors">
@@ -84,8 +80,6 @@
           </p>
         @endif
       </div>
-
-      <br />
 
       <div class="field-group">
         <label for="IsUrgent">Urgent ?</label>
@@ -95,7 +89,7 @@
 
       {{-- Catégorie --}}
       <div class="field-group">
-        <label for="categorie">{{ t('messages.add_item.cat_label') }}</label>        <br />
+        <label for="categorie">{{ t('messages.add_item.cat_label') }}</label>
         <select name="categorie" id="categorie" required>
           <option value="" disabled {{ !old('categorie') ? 'selected' : '' }}>
             {{ t('messages.add_item.cat_select') }}
@@ -110,11 +104,9 @@
         </select>
       </div>
 
-      <br />
-
       {{-- Mode (Don/Prêt/Recherche) --}}
       <div class="field-group">
-        <label for="mode">Mode :</label>        <br />
+        <label for="mode">Mode :</label>
         <select id="mode" name="mode" required>
           <option value="">
             -- Sélectionner un mode --
@@ -128,11 +120,9 @@
         </select>
       </div>
 
-      <br />
-
       {{-- Type (Don/Prêt) - Visible uniquement en mode donation --}}
-      <div id="type_section" class="field-group" if @if(!isDonation) style="display: none;" @end>
-        <label for="type">{{ t('messages.add_item.status_label') }}</label>        <br />
+      <div id="type_section" class="field-group" style="display: none;">
+        <label for="type">{{ t('messages.add_item.status_label') }}</label>
         <select id="type" name="type">
           <option value="">
             {{ t('messages.add_item.status_select') }}
@@ -174,7 +164,6 @@
 
         {{-- Masqué si c'est un Don --}}
         <div id="until_field">
-          <br />
           <div class="field">
             <label for="available_until">{{ t('messages.add_item.until') }}</label>
             @if(isDonation)
@@ -195,8 +184,6 @@
           </div>
         </div>
       </div>
-
-      <br />
 
       <div class="actions">
         <button type="submit" class="btn-save">{{ t('messages.edit_item.submit') }}</button>
