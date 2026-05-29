@@ -69,7 +69,7 @@ jobs:
           const packageJson = JSON.parse(fs.readFileSync(filePath, 'utf8'))
           packageJson.version = process.env.NEXT_VERSION
           fs.writeFileSync(filePath, JSON.stringify(packageJson, null, 2) + '\n')
-NODE
+          NODE
 
           git add package.json
           git commit -m "chore(release): start $NEXT_BRANCH"
