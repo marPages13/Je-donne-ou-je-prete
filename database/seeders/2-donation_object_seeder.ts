@@ -1,4 +1,3 @@
-import { DonationObjectFactory } from '#database/factories/donation_object_factory'
 import DonationObject from '#models/donation-object'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import { DateTime } from 'luxon'
