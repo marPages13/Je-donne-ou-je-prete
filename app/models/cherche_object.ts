@@ -40,14 +40,17 @@ export default class ChercheObject extends BaseModel {
   @column()
   declare giftedBy: number | null
 
+  @column()
+  declare asReferent: boolean
+  
+  @column()
+  declare urgent: boolean
+
   @belongsTo(() => User, { foreignKey: 'giftedBy' })
   declare donor: BelongsTo<typeof User>
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
-
-  @column()
-  declare urgent: boolean
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

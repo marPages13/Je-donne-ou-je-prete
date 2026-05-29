@@ -58,9 +58,12 @@ export default class ChercheObjectsController {
   /**
    * Affiche le formulaire de création
    */
-  async create({ view }: HttpContext) {
-    return view.render('pages/new-object')
-  }
+async create({ view, auth }: HttpContext) {
+  const referentRow = await db.from('sustainability_roles').where('role_key', 'referent_durabilite').first()
+  const isReferent = auth.user ? referentRow?.user_id === auth.user.id : false
+
+  return view.render('pages/new-object', { isReferent })
+}
 
   /**
    * Enregistre un nouvel objet (Compression WebP)
@@ -69,6 +72,7 @@ export default class ChercheObjectsController {
     if (!auth.user) return response.unauthorized('Vous devez être connecté.')
 
     const payload = await request.validateUsing(createDonationObjectValidator)
+    const actAsReferent = request.input('as_referent') === '1'
 
     let fileName: string | null = null
     if (payload.image && payload.image.tmpPath) {
@@ -87,6 +91,7 @@ export default class ChercheObjectsController {
       categorie: payload.categorie,
       imagePath: fileName,
       status: 1,
+      asReferent: actAsReferent,
       urgent: !!payload.IsUrgent,
       neededFrom: payload.available_from ? DateTime.fromJSDate(payload.available_from) : null,
       neededUntil: payload.available_until ? DateTime.fromJSDate(payload.available_until) : null,

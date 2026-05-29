@@ -4,20 +4,17 @@
   gap: 25px;
   align-items: center;
 }
-
 .nav-links a {
   text-decoration: none;
   font-size: 1.1em;
   color: #333;
   padding: 5px 0;
 }
-
 .nav-links a.active {
   color: var(--colorButton);
   font-weight: bold;
   border-bottom: 2px solid var(--colorButton);
 }
-
 .profile-icon {
   width: 35px;
   height: 35px;
@@ -25,40 +22,51 @@
   border-radius: 50%;
   margin-left: 20px;
 }
-
-/* Style commun aux deux bannières */
 .sticky-banner {
-  position: fixed; /* Reste fixé à l'écran */
-  top: 70%; /* Positionné à 70% du haut de la page */
-  transform: translateY(-50%); /* Centrage vertical parfait */
-  width: 20rem; /* Ajustez la largeur selon vos besoins */
-  z-index: -1000; /* Passe au-dessus du contenu */
+  position: fixed;
+  bottom: 0px; /* juste au-dessus du footer */
+  width: clamp(12rem, 14vw, 24rem);
+  max-width: 24rem;
+  height: auto;
+  max-height: 45vh; /* ← réduit ça, était 70vh */
+  object-fit: contain;
+  object-position: bottom; /* ← ancre l'image par le bas */
+  z-index: -1000;
 }
-
-/* Positionnement spécifique */
 .sticky-banner.left {
-  left: 5px; /* Distance du bord gauche */
+  left: 5px;
 }
-
 .sticky-banner.right {
-  right: 5px; /* Distance du bord droit */
-  transform: rotateY(180deg) translateY(-50%); /* Retourne horizontalement et centre verticalement */
+  right: 5px;
+  transform: rotateY(180deg);
 }
-
-/* Optionnel : Masquer les images sur mobile pour ne pas cacher le contenu */
-@media (max-width: 1800px), (max-height: 700px) {
+@media (max-width: 1300px) {
   .sticky-banner {
-    display: none;
+    width: clamp(9rem, 11vw, 16rem);
+
   }
 }
+@media (max-width: 1000px) {
+.sticky-banner{
+  display: none;
+}
+}
 
-/* --- Barre de Recherche --- */
+
+@media (max-width: 900px) {
+  .sticky-banner {
+    width: clamp(7rem, 10vw, 11rem);
+    max-height: 55vh;
+  }
+  .sticky-banner.right {
+    transform: rotateY(180deg);
+  }
+}
 .search-container {
   display: flex;
   justify-content: center;
   padding: 20px 0;
 }
-
 .search-bar {
   width: 60%;
   max-width: 700px;
@@ -73,43 +81,35 @@
   align-items: center;
   justify-content: space-between;
 }
-
 .search-bar span {
   color: #555;
 }
-
 .search-icon {
   font-size: 1.2em;
 }
-
-/* --- Titre et Filtres/Catégories --- */
 .content-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 15px 50px 0;
 }
-
 h2.section-title {
   font-size: 1.5em;
   color: var(--colorback);
   font-weight: bold;
   margin-top: 0;
 }
-
 .filters-and-categories {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
-
 .categories-title {
   font-size: 1.1em;
   font-weight: bold;
   color: #333;
   margin: 0;
 }
-
 .home-mode-title {
   text-align: center;
   font-size: 2.2rem;
@@ -117,13 +117,10 @@ h2.section-title {
   color: var(--colorButton);
   margin: -14px 0 18px;
 }
-
-/* --- Filtre (Sélecteur) --- */
 form {
   display: inline-flex;
   align-items: center;
 }
-
 label[for='filter_type'] {
   font-size: 1.1em;
   font-weight: 500;
@@ -131,7 +128,6 @@ label[for='filter_type'] {
   margin-right: 15px;
   padding: 5px 0;
 }
-
 label[for='filter_categorie'] {
   font-size: 1.1em;
   font-weight: 500;
@@ -140,7 +136,6 @@ label[for='filter_categorie'] {
   margin-right: 15px;
   padding: 5px 0;
 }
-
 #filter_type,
 #filter_categorie {
   background-color: var(--colorback);
@@ -156,15 +151,12 @@ label[for='filter_categorie'] {
   -moz-appearance: none;
   appearance: none;
 }
-
 #filter_type,
 #filter_categorie option {
   background-color: var(--colorback);
   color: var(--colorButton);
   padding: 8px;
 }
-
-/* --- Grille d'objets --- */
 .midle {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -174,9 +166,8 @@ label[for='filter_categorie'] {
   margin: auto;
   padding: 20px 0px;
 }
-
 .item {
-  position: relative; /* Indispensable pour l'overlay */
+  position: relative;
   max-width: 375px;
   flex: 0 0 calc(25% - 15px);
   height: 300px;
@@ -189,9 +180,8 @@ label[for='filter_categorie'] {
   min-width: 277px;
   box-sizing: border-box;
   text-align: center;
-  overflow: hidden; /* Pour que le bandeau ne dépasse pas des arrondis */
+  overflow: hidden;
 }
-
 .categories-placeholder {
   position: absolute;
   top: 220px;
@@ -201,15 +191,12 @@ label[for='filter_categorie'] {
   background-color: #dddddd;
   border-radius: 8px;
 }
-
-/* --- Styles du Texte dans les Objets --- */
 .item-name {
   font-size: 1em;
   font-weight: bold;
   color: #333;
   margin-bottom: 5px;
 }
-
 .item p,
 .item a {
   font-size: 0.9em;
@@ -217,7 +204,6 @@ label[for='filter_categorie'] {
   margin: 2px 0;
   text-decoration: none;
 }
-
 .item a {
   color: var(--colorlink);
   font-weight: bold;
@@ -229,7 +215,6 @@ label[for='filter_categorie'] {
   height: 200px;
   object-fit: cover;
   object-position: center;
-
   border-radius: 4px;
   margin-bottom: 10px;
 }
@@ -238,7 +223,6 @@ label[for='filter_categorie'] {
   top: 10%;
   left: 80%;
   transform: translate(-50%, -50%) rotate(25deg);
-
   background-color: #780c28;
   color: white;
   width: 110%;
@@ -251,7 +235,6 @@ label[for='filter_categorie'] {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   pointer-events: none;
 }
-
 @media (max-width: 1200px) {
   .midle {
     grid-template-columns: repeat(3, 1fr);
