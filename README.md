@@ -80,6 +80,17 @@ npm run dev
 
 Tu peux modifier ces comptes dans `database/seeders/1-UserSeeder.ts`.
 
+Pour ajouter une personne en temps que référent (une seule personne possible), il faut modifier dans la base directement avec la commande suivante sur sqlite: 
+```sql
+INSERT INTO sustainability_roles (user_id, role_key, created_at, updated_at)
+VALUES (1, 'referent_durabilite', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+ON CONFLICT (role_key)
+DO UPDATE SET
+    user_id = EXCLUDED.user_id,
+    updated_at = CURRENT_TIMESTAMP;
+```
+
+
 ## 🧱 Structure DB (important)
 
 Les colonnes récentes ont été **fusionnées dans les migrations de création** pour garder un historique lisible :
