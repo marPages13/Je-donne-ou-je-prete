@@ -164,6 +164,8 @@ main {
   width: 100%;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: auto;
+  position: relative;
+  z-index: 2;
 }
 
 .footer-content {

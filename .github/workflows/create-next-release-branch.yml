@@ -1,0 +1,76 @@
+name: Create Next Release Branch
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  create-next-branch:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'Release-vB')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Compute next branch name
+        id: next_branch
+        shell: bash
+        run: |
+          source_branch='${{ github.event.pull_request.head.ref }}'
+
+          if [[ "$source_branch" =~ ^Release-vB([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            next_minor=$((minor + 1))
+
+            next_branch="Release-vB${major}.${next_minor}.0"
+            next_version="B${major}.${next_minor}.0"
+
+            echo "branch_name=$next_branch" >> "$GITHUB_OUTPUT"
+            echo "version=$next_version" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Source branch '$source_branch' does not match Release-vBx.y.z, skipping."
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create branch and bump version
+        if: steps.next_branch.outputs.skip != 'true'
+        shell: bash
+        env:
+          NEXT_BRANCH: ${{ steps.next_branch.outputs.branch_name }}
+          NEXT_VERSION: ${{ steps.next_branch.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git ls-remote --exit-code --heads origin "$NEXT_BRANCH" >/dev/null 2>&1; then
+            echo "Branch $NEXT_BRANCH already exists, nothing to do."
+            exit 0
+          fi
+
+          git checkout -b "$NEXT_BRANCH"
+
+          node - <<'NODE'
+          const fs = require('fs')
+
+          const filePath = 'package.json'
+          const packageJson = JSON.parse(fs.readFileSync(filePath, 'utf8'))
+          packageJson.version = process.env.NEXT_VERSION
+          fs.writeFileSync(filePath, JSON.stringify(packageJson, null, 2) + '\n')
+          NODE
+
+          git add package.json
+          git commit -m "chore(release): start $NEXT_BRANCH"
+          git push origin "$NEXT_BRANCH"

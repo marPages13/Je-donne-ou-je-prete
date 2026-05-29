@@ -76,6 +76,21 @@
       <input type="checkbox" id="IsUrgent" name="IsUrgent" value="1" />
     </div>
 
+  @if(isReferent)
+  <div class="field-group referent-checkbox-group">
+    <label for="as_referent" class="referent-label">
+      {{ t('messages.add_item.act_as_referent', {}, 'Publier officiellement en tant que Référent Durabilité') }}
+      <input 
+        type="checkbox" 
+        id="as_referent" 
+        name="as_referent" 
+        value="1" 
+        {{ old('as_referent') == '1' ? 'checked' : '' }}
+      />
+    </label>
+  </div>
+@endif
+
     {{-- Catégorie --}}
     <div class="field-group">
       <label for="categorie">{{ t('messages.add_item.cat_label') }}</label>
