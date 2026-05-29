@@ -31,6 +31,17 @@ h2,
   margin-bottom: 10px;
 }
 
+.badge-referent {
+  background-color: #e6f4ea;
+  color: #137333;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  display: inline-block;
+  border: 1px solid #ceead6;
+  font-size: 0.95rem;
+}
+
 p {
   line-height: 1.5;
 }
