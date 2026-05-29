@@ -1,4 +1,5 @@
 @import url(variable.css);
+
 p {
   width: 98%;
   white-space: nowrap;
@@ -9,6 +10,7 @@ p {
 form {
   flex: 1;
 }
+
 .btn-republish {
   width: 100%;
   background-color: var(--colorButton);
@@ -20,6 +22,7 @@ form {
   font-size: 10px;
   font-weight: bold;
 }
+
 .profile-icon {
   width: 40px;
   height: 40px;
@@ -31,7 +34,7 @@ form {
   display: flex;
   justify-content: center;
   margin: 20px 0;
-  padding: 0 15px; /* Ajout d'un padding pour les bords sur mobile */
+  padding: 0 15px;
 }
 
 .search-bar input {
@@ -42,7 +45,65 @@ form {
   padding: 0 15px;
   font-size: 16px;
   box-sizing: border-box;
-  max-width: 100%; /* S'assure qu'il ne déborde jamais */
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   BOUTON UNIQUE INTERRUPTEUR (TOGGLE COMPTE / RÉFÉRENT)
+   ========================================================================== */
+
+.referent-switch-container {
+  width: 100%;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.tab-btn-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  /* Couleurs de fond et du texte (avec fallback si la variable ne marche pas) */
+  background-color: var(--colorButton, #4a7c59); 
+  color: var(--colorback, #ffffff);
+  
+  /* Supprime la bordure grise/noire du navigateur */
+  border: none; 
+  
+  /* Espacement interne et arrondi */
+  padding: 10px 24px;
+  border-radius: 20px;
+  
+  /* Typographie */
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  
+  /* Alignement propre du texte */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Effet au survol (devient un peu plus foncé ou change de style) */
+.tab-btn-toggle:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Style lorsque le mode Référent est actif */
+.tab-btn-toggle.mode-referent {
+  background-color: var(--colorItem, #e0e0e0);
+  color: #333333;
+  border: 2px solid var(--colorButton, #4a7c59);
+}
+
+.tab-btn-toggle.mode-referent:hover {
+  background-color: var(--colorButton, #4a7c59);
+  color: var(--colorback, #ffffff);
 }
 
 .container {
@@ -103,6 +164,7 @@ form {
   padding: 10px;
   height: 300px;
 }
+
 .item img {
   width: 150px;
   height: 200px;
@@ -111,6 +173,7 @@ form {
   border-radius: 4px;
   margin-bottom: 10px;
 }
+
 .item p,
 .item a {
   font-size: 0.9em;
@@ -119,6 +182,7 @@ form {
   text-decoration: none;
   margin-bottom: 5px;
 }
+
 .item div {
   width: 90px;
   height: 90px;
@@ -153,14 +217,16 @@ form {
   cursor: pointer;
   width: 100%;
 }
+
 .item-wrapper {
-  flex: 0 0 calc(20% - 16px); /* 5 objets max par ligne */
+  flex: 0 0 calc(20% - 16px);
   display: flex;
   flex-direction: column;
   min-width: 180px;
   height: 300px;
   transition: transform 0.2s;
 }
+
 .btn-edit {
   background-color: #e7b475;
   color: var(--colorback);
@@ -172,35 +238,40 @@ form {
   background-color: #780c28;
   color: var(--colorback);
 }
+
+/* ==========================================================================
+   MEDIA QUERIES RESPONSIVE
+   ========================================================================== */
+
 @media (max-width: 1700px) {
   .items {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
 @media (max-width: 1400px) {
   .items {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
 @media (max-width: 1200px) {
   .items {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-/* RESPONSIVE MOBILE & TABLETTE (max-width: 900px) */
+
 @media (max-width: 900px) {
   .container {
-    flex-direction: column; /* Empile la sidebar et la section */
-    padding: 20px 15px; /* Réduit le padding général */
+    flex-direction: column;
+    padding: 20px 15px;
     gap: 20px;
   }
 
   .sidebar {
-    width: 100%; /* La sidebar prend toute la largeur */
-    padding-bottom: 20px; /* Espace après la sidebar empilée */
-    border-bottom: 1px solid #eee; /* Ligne de séparation visuelle */
-
-    /* Centrage des éléments de la sidebar */
+    width: 100%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -219,8 +290,8 @@ form {
   }
 
   .sidebar a {
-    margin: 5px 10px; /* Espacement horizontal pour les liens */
-    display: inline-block; /* Permet aux liens de s'aligner côte à côte */
+    margin: 5px 10px;
+    display: inline-block;
   }
 
   .section {
@@ -232,15 +303,26 @@ form {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     row-gap: 60px;
-    justify-content: space-around; /* Mieux répartir les petits items sur mobile */
+    justify-content: space-around;
+  }
+
+  .referent-switch-container {
+    justify-content: center;
+    padding: 0 10px;
+  }
+  
+  .tab-btn-toggle {
+    width: 100%;
+    justify-content: center;
+    font-size: 13px;
   }
 }
 
-/* MOBILE SEUL (max-width: 480px) */
 @media (max-width: 480px) {
   .items {
     grid-template-columns: repeat(1, 1fr);
   }
+  
   .search-bar input {
     height: 30px;
     font-size: 14px;

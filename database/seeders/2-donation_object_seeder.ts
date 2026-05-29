@@ -135,7 +135,6 @@ export default class extends BaseSeeder {
         categorie: 'appliances',
         userId: 1,
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
-        as_referent: true,
       },
       {
         name: 'Guitare acoustique',
@@ -147,7 +146,6 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
-        as_referent: true,
       },
       {
         name: 'Lot de stylos et crayons',
@@ -159,7 +157,6 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
-        as_referent: true,
       },
       {
         name: 'Écran PC 24 pouces',
@@ -169,7 +166,6 @@ export default class extends BaseSeeder {
         categorie: 'tech',
         userId: 1,
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
-        as_referent: true,
       },
       {
         name: 'AMD EPYC 9965',
@@ -181,13 +177,12 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
-        as_referent: true,
       },
     ]
 
     // // On crée les objets définis ci-dessus
     await DonationObject.createMany(objects)
 
-    await DonationObjectFactory.createMany(10000)
+    // await DonationObjectFactory.createMany(10000)
   }
 }
