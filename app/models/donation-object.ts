@@ -43,14 +43,17 @@ export default class DonationObject extends BaseModel {
   @column()
   declare reservedBy: number | null
 
+  @column()
+  declare asReferent: boolean
+  
+  @column()
+  declare urgent: boolean
+
   @belongsTo(() => User, { foreignKey: 'reservedBy' })
   declare reserver: BelongsTo<typeof User>
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
-
-  @column()
-  declare urgent: boolean
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

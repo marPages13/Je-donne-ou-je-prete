@@ -40,9 +40,15 @@
       | {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
     </h2>
 
-    <h3>
-      {{ t('messages.show_item.published_by') }} {{ object.user.Username }}
-    </h3>
+<h3>
+  @if(object.asReferent)
+    {{-- Affichage Institutionnel --}}
+    <span class="badge-referent">{{ t('messages.show_item.published_by') }} {{ t('messages.show_item.official_role', {}, 'Référent Durabilité') }}</span>
+  @else
+    {{-- Affichage Normal --}}
+    {{ t('messages.show_item.published_by') }} {{ object.user.Username }}
+  @endif
+</h3>
 
     <h3 class="item-date">
       @if(isSearchMode && object.neededFrom && object.neededUntil)

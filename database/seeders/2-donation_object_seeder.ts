@@ -17,6 +17,7 @@ export default class extends BaseSeeder {
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
         urgent: true,
+        as_referent: true,
       },
       {
         name: 'Ballon de basket',
@@ -27,6 +28,7 @@ export default class extends BaseSeeder {
         userId: 1,
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         urgent: true,
+        as_referent: true,
       },
       {
         name: 'Livre - Le Seigneur des Anneaux',
@@ -39,6 +41,7 @@ export default class extends BaseSeeder {
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
         urgent: true,
+        as_referent: true,
       },
       {
         name: "Veste d'hiver",
@@ -51,6 +54,7 @@ export default class extends BaseSeeder {
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
         urgent: true,
+        as_referent: true,
       },
       {
         name: 'Console de jeu (ancienne génération)',
@@ -61,6 +65,7 @@ export default class extends BaseSeeder {
         userId: 1,
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         urgent: true,
+        as_referent: true,
       },
       {
         name: 'Assiettes en porcelaine',
@@ -73,6 +78,7 @@ export default class extends BaseSeeder {
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
         urgent: true,
+        as_referent: true,
       },
       {
         name: 'Tapis de Yoda',
@@ -85,6 +91,7 @@ export default class extends BaseSeeder {
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
         urgent: true,
+        as_referent: true,
       },
       {
         name: 'Ordinateur portable',
@@ -94,6 +101,7 @@ export default class extends BaseSeeder {
         categorie: 'tech',
         userId: 1,
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
+        as_referent: true,
       },
       {
         name: 'Jeu de construction pour enfants',
@@ -105,6 +113,7 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
+        as_referent: true,
       },
       {
         name: 'Chaussures de randonnée',
@@ -116,6 +125,7 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
+        as_referent: true,
       },
       {
         name: 'Micro-ondes',
@@ -125,6 +135,7 @@ export default class extends BaseSeeder {
         categorie: 'appliances',
         userId: 1,
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
+        as_referent: true,
       },
       {
         name: 'Guitare acoustique',
@@ -136,6 +147,7 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
+        as_referent: true,
       },
       {
         name: 'Lot de stylos et crayons',
@@ -147,6 +159,7 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
+        as_referent: true,
       },
       {
         name: 'Écran PC 24 pouces',
@@ -156,6 +169,7 @@ export default class extends BaseSeeder {
         categorie: 'tech',
         userId: 1,
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
+        as_referent: true,
       },
       {
         name: 'AMD EPYC 9965',
@@ -167,6 +181,7 @@ export default class extends BaseSeeder {
         imagePath: 'xe2pa2n1c1wktcdcp7sq95hh.webp',
         availableFrom: DateTime.now(),
         availableUntil: DateTime.now().plus({ days: 7 }),
+        as_referent: true,
       },
     ]
 
