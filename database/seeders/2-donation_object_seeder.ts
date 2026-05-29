@@ -1,4 +1,3 @@
-import { DonationObjectFactory } from '#database/factories/donation_object_factory'
 import DonationObject from '#models/donation-object'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import { DateTime } from 'luxon'
@@ -173,6 +172,6 @@ export default class extends BaseSeeder {
     // // On crée les objets définis ci-dessus
     await DonationObject.createMany(objects)
 
-    await DonationObjectFactory.createMany(10000)
+    // await DonationObjectFactory.createMany(10000)
   }
 }
