@@ -1,4 +1,4 @@
-import ssoBridgePackage from 'sso-bridge'
+import ssoBridgePackage from 'edu-sso-bridge'
 import env from '#start/env'
 
 // On définit l'interface pour avoir l'autocomplétion et éviter les erreurs
