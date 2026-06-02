@@ -1,6 +1,8 @@
 import { Logger } from '@adonisjs/core/logger'
 import { HttpContext } from '@adonisjs/core/http'
 import { NextFn } from '@adonisjs/core/types/http'
+import { promises as fs } from 'fs'
+import path from 'path'
 
 /**
  * The container bindings middleware binds classes to their request
@@ -21,10 +23,22 @@ export default class ContainerBindingsMiddleware {
       const response = await fetch(
         'https://api.github.com/repos/BlackAngelTVdev/Je-donne-ou-je-prete/releases/latest'
       )
-
       if (!response.ok) {
-        this.cachedRepoVersion = 'V0.00'
-        return this.cachedRepoVersion
+        // If GitHub API fails, try reading local package.json for a version
+        try {
+          const pkgPath = path.join(process.cwd(), 'package.json')
+          const pkgRaw = await fs.readFile(pkgPath, 'utf-8')
+          const pkg = JSON.parse(pkgRaw) as { version?: string }
+          let version = pkg.version || 'V0.00'
+          if (!/^v/i.test(version)) {
+            version = 'v' + version
+          }
+          this.cachedRepoVersion = version
+          return this.cachedRepoVersion
+        } catch {
+          this.cachedRepoVersion = 'V0.00'
+          return this.cachedRepoVersion
+        }
       }
 
       const data = (await response.json()) as { tag_name: string }
