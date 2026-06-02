@@ -1,7 +1,7 @@
 <h1>
-  {{ error.code }} - Server error
+  {{ error.code }} - {{ t('messages.errors.server_title') }}
 </h1>
-<img src="https://http.cat/{{ error.code || 500 }}" alt="Erreur serveur http.cat" />
+<img src="https://http.cat/{{ error.code || 500 }}" alt="{{ t('messages.errors.server_title') }}" />
 <p>
-  Cette image est fournie par <a href="https://http.cat/">http.cat</a>pour rendre l’erreur plus amusante !
+  {{ t('messages.errors.httpcat_note') }}
 </p>

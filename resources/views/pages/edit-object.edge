@@ -53,9 +53,9 @@
         attributes: { id: 'image' }
         })
         @if(object.imagePath)
-          <img id="imageDisplay" src="/uploads/items/{{ object.imagePath }}" alt="Aperçu" />
+          <img id="imageDisplay" src="/uploads/items/{{ object.imagePath }}" alt="{{ t('messages.add_item.image_preview_alt') }}" />
         @else
-          <img class="CACHER" id="imageDisplay" src="" alt="Aperçu" />
+          <img class="CACHER" id="imageDisplay" src="" alt="{{ t('messages.add_item.image_preview_alt') }}" />
         @endif
       </div>
 
@@ -82,7 +82,7 @@
       </div>
 
       <div class="field-group">
-        <label for="IsUrgent">Urgent ?</label>
+        <label for="IsUrgent">{{ t('messages.add_item.urgent_label') }}</label>
         <input type="hidden" name="IsUrgent" value="0" />
         <input type="checkbox" id="IsUrgent" name="IsUrgent" value="1" {{ object.urgent ? 'checked' : '' }} />
       </div>
@@ -106,10 +106,10 @@
 
       {{-- Mode (Don/Prêt/Recherche) --}}
       <div class="field-group">
-        <label for="mode">Mode :</label>
+        <label for="mode">{{ t('messages.add_item.mode_label') }}</label>
         <select id="mode" name="mode" required>
           <option value="">
-            -- Sélectionner un mode --
+            {{ t('messages.add_item.mode_select') }}
           </option>
           <option value="donation" {{ (isDonation) ? 'selected' : '' }}>
             {{ t('messages.home.mode_donation') }}

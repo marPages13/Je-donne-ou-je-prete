@@ -4,7 +4,9 @@
     "login_title": "Connexion",
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
-    "login_button": "Se connecter"
+    "login_button": "Se connecter",
+    "edu_vaud": "Edu Vaud",
+    "external_login": "Externe"
   },
   "add_item": {
     "title": "Proposer un nouvel objet",
@@ -30,6 +32,7 @@
     "until": "Jusqu'à (date de fin) :",
     "submit": "Ajouter l'objet",
     "back": "Retour à la page d'accueil",
+    "act_as_referent": "Publier officiellement en tant que Référent Durabilité",
     "categories": {
       "sport": "Sport & Loisirs",
       "books": "Culture & Livres",
@@ -54,7 +57,8 @@
     "filter_type": "Filtrer par type",
     "filter_cat": "Filtrer par catégorie",
     "mode_search": "Mode recherche",
-    "mode_donation": "Mode don / prêt"
+    "mode_donation": "Mode don / prêt",
+    "no_objects_found": "Aucun objet trouvé."
   },
   "edit_item": {
     "title": "Éditer l'objet :",
@@ -65,6 +69,7 @@
   "show_item": {
     "published_by": "Publié par :",
     "available_from": "Disponible du",
+    "available_from_don": "Disponible depuis le",
     "available_fromdon": "Disponible depuis le",
     "needed_from": "Besoin du",
     "to": "au",
@@ -76,7 +81,9 @@
     "message_to_offer": "Envoyer un message au demandeur ?",
     "confirm_reserve": "Confirmer la réservation",
     "confirm_offer": "Confirmer l'offre",
-    "confirm_placolder": "Laissez vide pour ne rien ajouter."
+    "confirm_placeholder": "Laissez vide pour ne rien ajouter.",
+    "confirm_placolder": "Laissez vide pour ne rien ajouter.",
+    "official_role": "Référent Durabilité"
   },
   "account": {
     "logout": "Se déconnecter",
@@ -91,16 +98,80 @@
     "btn_republish": "REPUBLIER",
     "btn_edit": "MODIFIER",
     "btn_delete": "SUPPRIMER",
-    "confirm_delete": "Supprimer ?"
+    "confirm_delete": "Supprimer ?",
+    "view_referent": "Passer aux annonces Référent",
+    "view_personal": "Passer à mes annonces personnelles",
+    "title_give_ref": "Dons officiels en cours",
+    "empty_give_ref": "Aucun don officiel enregistré.",
+    "title_lend_ref": "Prêts officiels en cours",
+    "empty_lend_ref": "Aucun prêt officiel enregistré."
   },
   "footer": {
     "rights": "Tous droits réservés",
-    "view_github": "Voir sur GitHub"
+    "view_github": "Voir sur GitHub",
+    "contact": "Contact",
+    "last_commit_alt": "Dernier commit"
   },
   "nav": {
     "add": "Ajouter",
     "account": "Compte",
     "search": "Chercher",
-    "don": "Don/Prêt"
+    "don": "Don/Prêt",
+    "admin": "Administration"
+  },
+  "site": {
+    "title": "Je donne, je prête",
+    "logo_alt": "Logo du site",
+    "user_alt": "Utilisateur",
+    "banner_left_alt": "Bannière gauche",
+    "banner_right_alt": "Bannière droite"
+  },
+  "pages": {
+    "home": "Accueil",
+    "account": "Compte",
+    "admin_dashboard": "Administration",
+    "contact": "Laisser un feedback"
+  },
+  "contact": {
+    "title": "Laisser un feedback",
+    "author_label": "Auteur du feedback :",
+    "message_label": "Description détaillée du retour :",
+    "message_placeholder": "Décrivez votre expérience, suggestion ou problème rencontré...",
+    "submit": "Envoyer le feedback",
+    "cancel": "Annuler"
+  },
+  "admin": {
+    "title": "Administration",
+    "dashboard_title": "Tableau de bord d'administration",
+    "note": "Les totaux ci-dessous ne comptent que les objets actifs : les éléments archivés ou automatiquement supprimés après 120 jours sont exclus.",
+    "users_total_label": "Utilisateurs inscrits",
+    "donations_total_label": "Annonces de don/prêt",
+    "searches_total_label": "Recherches en cours",
+    "reservations_total_label": "Réservations",
+    "evolution_title": "Évolution des inscriptions (10 derniers jours)",
+    "date_header": "Date",
+    "registrations_header": "Inscriptions",
+    "feedback_title": "Feedback récents",
+    "delete_confirm": "Supprimer ce feedback ?",
+    "delete_button": "Supprimer",
+    "no_feedback": "Aucun feedback pour le moment."
+  },
+  "errors": {
+    "server_title": "Erreur serveur",
+    "not_found_title": "Page introuvable",
+    "httpcat_note": "Cette image est fournie par http.cat pour rendre l’erreur plus amusante !"
+  },
+  "emails": {
+    "reservation": {
+      "title": "Nouvelle demande !",
+      "greeting": "Bonjour",
+      "interested": "Bonne nouvelle ! Un utilisateur est intéressé par votre",
+      "requester_label": "Demandeur :",
+      "email_label": "Email :",
+      "message_label": "Message du demandeur :",
+      "contact_reply": "Vous pouvez contacter cette personne directement en répondant à cet email.",
+      "reply_button": "Répondre au demandeur",
+      "auto_notice": "Ceci est un message automatique, merci de ne pas y répondre directement."
+    }
   }
 }

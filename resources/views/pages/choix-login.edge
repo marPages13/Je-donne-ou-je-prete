@@ -9,7 +9,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
   <title>
-    {{ t('messages.auth.login_title') }} | Je donne, je prête
+    {{ t('messages.auth.login_title') }} | {{ t('messages.site.title') }}
   </title>
 </head>
 
@@ -17,13 +17,13 @@
   <main>
     @include('partials/flash')
     <form method="get">
-      <img src="{{ asset('resources/img/logo.png') }}" />
+      <img src="{{ asset('resources/img/logo.png') }}" alt="{{ t('messages.site.logo_alt') }}" />
       <button class="btn btn-outline-info mt-2 edu" formaction="{{ route('sso.test.login') }}" type="submit">
-        <img src="https://account.microsoft.com/favicon.ico" alt="Edu Vaud" />
-        <span>Edu Vaud</span>
+        <img src="https://account.microsoft.com/favicon.ico" alt="{{ t('messages.auth.edu_vaud') }}" />
+        <span>{{ t('messages.auth.edu_vaud') }}</span>
       </button>
       <button class="btn btn-outline-info mt-2" formaction="{{ route('login') }}" type="submit">
-        Externe
+        {{ t('messages.auth.external_login') }}
       </button>
     </form>
   </main>

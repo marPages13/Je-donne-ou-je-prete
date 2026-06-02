@@ -1,6 +1,18 @@
-@let(title = 'Account')
+@let(title = t('messages.pages.account'))
 @let(css = 'account.css')
 @include('partials/header')
+
+@let(catMap = {
+  'Sport & Loisirs': 'sport',
+  'Culture & Livres': 'books',
+  'Vêtements': 'clothes',
+  'Informatique & Tech': 'tech',
+  'Maison & Cuisine': 'home',
+  'Jouets & Enfants': 'toys',
+  'Électroménager': 'appliances',
+  'Musique & Art': 'art',
+  'Bureau & Fournitures': 'office'
+})
 
 <main>
   @include('partials/flash')
@@ -28,7 +40,7 @@
             data-current="personal"
             onclick="toggleAccountView()"
           >
-            {{ t('messages.account.view_referent', {}, 'Passer aux annonces Référent') }}
+            {{ t('messages.account.view_referent') }}
           </button>
         </div>
       @endif
@@ -56,7 +68,8 @@
                     @endif
                   </p>
                   <p class="item-cat">
-                    {{ object.categorie }}
+                    @let(currentKey = catMap[object.categorie] || object.categorie)
+                    {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
                   </p>
                 </a>
 
@@ -116,7 +129,8 @@
                     @endif
                   </p>
                   <p class="item-cat">
-                    {{ object.categorie }}
+                    @let(currentKey = catMap[object.categorie] || object.categorie)
+                    {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
                   </p>
                 </a>
 
@@ -165,7 +179,7 @@
         <div id="view-referent" class="account-view-group" style="display: none;">
           {{-- SECTION DONS RÉFÉRENT --}}
           <div class="section">
-            <h2>{{ t('messages.account.title_give_ref', {}, 'Dons officiels en cours') }}</h2>
+            <h2>{{ t('messages.account.title_give_ref') }}</h2>
             <div class="items">
               @each(object in objects.filter(o => !o.type && o.asReferent))
                 <div class="item-wrapper">
@@ -177,7 +191,10 @@
                         <span>{{ t('messages.account.reserved_label') }}</span>
                       @endif
                     </p>
-                    <p class="item-cat">{{ object.categorie }}</p>
+                    <p class="item-cat">
+                      @let(currentKey = catMap[object.categorie] || object.categorie)
+                      {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
+                    </p>
                   </a>
                   <div class="item-actions">
                     <div>
@@ -202,14 +219,14 @@
                   </div>
                 </div>
               @else
-                <p>{{ t('messages.account.empty_give_ref', {}, 'Aucun don officiel enregistré.') }}</p>
+                <p>{{ t('messages.account.empty_give_ref') }}</p>
               @end
             </div>
           </div>
 
           {{-- SECTION PRÊTS RÉFÉRENT --}}
           <div class="section">
-            <h2>{{ t('messages.account.title_lend_ref', {}, 'Prêts officiels en cours') }}</h2>
+            <h2>{{ t('messages.account.title_lend_ref') }}</h2>
             <div class="items">
               @each(object in objects.filter(o => o.type && o.asReferent))
                 <div class="item-wrapper">
@@ -221,7 +238,10 @@
                         <span>{{ t('messages.account.reserved_label') }}</span>
                       @endif
                     </p>
-                    <p class="item-cat">{{ object.categorie }}</p>
+                    <p class="item-cat">
+                      @let(currentKey = catMap[object.categorie] || object.categorie)
+                      {{ t(`messages.add_item.categories.${currentKey}`, {}, object.categorie) }}
+                    </p>
                   </a>
                   <div class="item-actions">
                     <div>
@@ -246,7 +266,7 @@
                   </div>
                 </div>
               @else
-                <p>{{ t('messages.account.empty_lend_ref', {}, 'Aucun prêt officiel enregistré.') }}</p>
+                <p>{{ t('messages.account.empty_lend_ref') }}</p>
               @end
             </div>
           </div>
@@ -297,7 +317,7 @@
         if (referentGroup) referentGroup.style.display = 'block';
         
         btn.setAttribute('data-current', 'referent');
-        btn.innerHTML = "{{ t('messages.account.view_personal', {}, 'Passer à mes annonces personnelles') }}";
+        btn.innerHTML = "{{ t('messages.account.view_personal') }}";
         btn.classList.add('mode-referent');
         break;
 
@@ -307,7 +327,7 @@
         if (referentGroup) referentGroup.style.display = 'none';
         
         btn.setAttribute('data-current', 'personal');
-        btn.innerHTML = "{{ t('messages.account.view_referent', {}, 'Passer aux annonces Référent') }}";
+        btn.innerHTML = "{{ t('messages.account.view_referent') }}";
         btn.classList.remove('mode-referent');
         break;
     }
