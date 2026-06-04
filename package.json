@@ -1,6 +1,6 @@
 {
   "name": "je-donne_je-prete",
-  "version": "B4.3.0",
+  "version": "B4.4.0",
   "private": true,
   "type": "module",
   "license": "LICENCE DE PROPRIÉTÉ INTELLECTUELLE",
@@ -86,11 +86,11 @@
     "better-sqlite3": "^12.10.0",
     "bootstrap": "^5.3.8",
     "edge.js": "^6.2.1",
+    "edu-sso-bridge": "^1.0.4",
     "luxon": "^3.7.2",
     "mysql2": "^3.15.3",
     "reflect-metadata": "^0.2.2",
-    "sharp": "^0.34.5",
-    "sso-bridge": "github:ETML-INF/SSO-Bridge#1.0.1"
+    "sharp": "^0.34.5"
   },
   "hotHook": {
     "boundaries": [

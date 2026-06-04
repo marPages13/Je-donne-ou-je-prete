@@ -9,7 +9,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
   <title>
-    {{ t('messages.auth.login_title') }} | Je donne, je prête
+    {{ t('messages.auth.login_title') }} | {{ t('messages.site.title') }}
   </title>
 </head>
 
@@ -17,7 +17,7 @@
   <main>
     @include('partials/flash')
     <form action="{{ route('autenticate') }}" method="post">
-      <img src="{{ asset('resources/img/logo.png') }}" />
+      <img src="{{ asset('resources/img/logo.png') }}" alt="{{ t('messages.site.logo_alt') }}" />
       {{ csrfField() }}
       @if(flashMessages.has('errors.auth'))
         <p class="errors">

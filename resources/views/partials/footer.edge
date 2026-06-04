@@ -10,7 +10,7 @@
       <div class="github-stats">
         <img
           src="https://img.shields.io/github/last-commit/BlackAngelTVdev/Je-donne-ou-je-prete?style=for-the-badge&color=blue"
-          alt="Last Commit"
+          alt="{{ t('messages.footer.last_commit_alt') }}"
         />
         <span>{{ repoVersion }}</span>
       </div>
@@ -21,7 +21,7 @@
       >
         <i class="fab fa-github"></i>{{ t('messages.footer.view_github') }}
             </a>
-          <a href="{{ route('contact') }}" class="github-link">Contact</a>
+          <a href="{{ route('contact') }}" class="github-link">{{ t('messages.footer.contact') }}</a>
     </div>
   </div>
 </footer>
