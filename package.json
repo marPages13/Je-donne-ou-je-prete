@@ -18,9 +18,11 @@
       "email": "albertbraimi@gmail.com"
     }
   ],
-  "scripts": {
+"scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
+    "build-img-l": "mkdir -p build/public/uploads/items && mkdir -p ./items_backup && cp -r build/public/uploads/items/. ./items_backup/ && node ace build && mkdir -p build/public/uploads/items && cp -r ./items_backup/. build/public/uploads/items/ && rm -rf ./items_backup",
+    "build-img-w": "npx shx mkdir -p build/public/uploads/items && npx shx mkdir -p ./items_backup && npx shx cp -r build/public/uploads/items/* ./items_backup/ && node ace build && npx shx mkdir -p build/public/uploads/items && npx shx cp -r ./items_backup/* build/public/uploads/items/ && npx shx rm -rf ./items_backup",
     "dev": "node ace serve --watch --no-clear",
     "test": "node ace test --no-assets",
     "lint": "eslint .",
@@ -62,6 +64,7 @@
     "hot-hook": "^0.4.0",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.5.3",
+    "shx": "^0.4.0",
     "ts-node-maintained": "^10.9.5",
     "typescript": "~5.8",
     "vite": "^6.3.5"
