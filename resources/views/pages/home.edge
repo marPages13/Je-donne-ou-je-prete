@@ -1,4 +1,4 @@
-@let(title = 'Home')
+@let(title = t('messages.pages.home'))
 @let(css = 'home.css')
 @include('partials/header')
 @let(isSearchMode = !!isCherchePage)
@@ -18,9 +18,9 @@
 })
 
 <main>
-  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner left" alt="Banner gauche" />
+  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner left" alt="{{ t('messages.site.banner_left_alt') }}" />
 
-  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner right" alt="Banner droite" />
+  <img src="{{ asset('resources/img/jdjp.png') }}" class="sticky-banner right" alt="{{ t('messages.site.banner_right_alt') }}" />
   @include('partials/flash')
 
   <h1 class="home-mode-title">
@@ -89,7 +89,7 @@
 
             <p class="item-status">
               @if(isSearchMode)
-                Recherche
+                {{ t('messages.common.search') }}
               @elseif(!object.type)
                 {{ t('messages.common.give') }}
               @else
@@ -105,7 +105,7 @@
     @else
       {{-- Petit bonus : traduction du message vide --}}
       <p>
-        {{ t('messages.home.no_objects_found', {}, 'Aucun objet trouvé.') }}
+        {{ t('messages.home.no_objects_found') }}
       </p>
     @end
   </div>

@@ -3,7 +3,9 @@
     "login_title": "Login",
     "username": "Username",
     "password": "Password",
-    "login_button": "Login"
+    "login_button": "Login",
+    "edu_vaud": "Edu Vaud",
+    "external_login": "External"
   },
   "add_item": {
     "title": "Propose a new item",
@@ -29,6 +31,7 @@
     "until": "Until (end date):",
     "submit": "Add Item",
     "back": "Back to home page",
+    "act_as_referent": "Publish officially as the Sustainability Coordinator",
     "categories": {
       "sport": "Sports & Leisure",
       "books": "Culture & Books",
@@ -53,7 +56,8 @@
     "filter_type": "Filter by type",
     "filter_cat": "Filter by category",
     "mode_search": "Search mode",
-    "mode_donation": "Give / Lend mode"
+    "mode_donation": "Give / Lend mode",
+    "no_objects_found": "No items found."
   },
   "edit_item": {
     "title": "Edit Item:",
@@ -64,6 +68,7 @@
   "show_item": {
     "published_by": "Published by:",
     "available_from": "Available from",
+    "available_from_don": "Available since",
     "available_fromdon": "Available since",
     "needed_from": "Needed from",
     "to": "to",
@@ -75,7 +80,9 @@
     "message_to_offer": "Send a message to the requester ?",
     "confirm_reserve": "Confirm the reservation",
     "confirm_offer": "Confirm offer",
-    "confirm_placolder": "Leave blank to avoid adding anything."
+    "confirm_placeholder": "Leave blank to add nothing.",
+    "confirm_placolder": "Leave blank to add nothing.",
+    "official_role": "Sustainability Coordinator"
   },
   "account": {
     "logout": "Logout",
@@ -90,16 +97,80 @@
     "btn_republish": "REPUBLISH",
     "btn_edit": "EDIT",
     "btn_delete": "DELETE",
-    "confirm_delete": "Delete this item?"
+    "confirm_delete": "Delete this item?",
+    "view_referent": "Switch to referent listings",
+    "view_personal": "Switch to personal listings",
+    "title_give_ref": "Official items to give",
+    "empty_give_ref": "No official giveaway has been recorded.",
+    "title_lend_ref": "Official items to lend",
+    "empty_lend_ref": "No official loan has been recorded."
   },
   "footer": {
     "rights": "All rights reserved",
-    "view_github": "View on GitHub"
+    "view_github": "View on GitHub",
+    "contact": "Contact",
+    "last_commit_alt": "Last commit"
   },
   "nav": {
     "add": "Add",
     "account": "Account",
     "search": "Search",
-    "don": "Give/Lend"
+    "don": "Give/Lend",
+    "admin": "Admin"
+  },
+  "site": {
+    "title": "Give or Lend",
+    "logo_alt": "Site logo",
+    "user_alt": "User",
+    "banner_left_alt": "Left banner",
+    "banner_right_alt": "Right banner"
+  },
+  "pages": {
+    "home": "Home",
+    "account": "Account",
+    "admin_dashboard": "Administration",
+    "contact": "Feedback"
+  },
+  "contact": {
+    "title": "Feedback",
+    "author_label": "Feedback author:",
+    "message_label": "Detailed feedback description:",
+    "message_placeholder": "Describe your experience, suggestion or issue encountered...",
+    "submit": "Send feedback",
+    "cancel": "Cancel"
+  },
+  "admin": {
+    "title": "Administration",
+    "dashboard_title": "Administration dashboard",
+    "note": "The totals below only include active items: archived items or items automatically deleted after 120 days are excluded.",
+    "users_total_label": "Registered users",
+    "donations_total_label": "Give/Lend listings",
+    "searches_total_label": "Active searches",
+    "reservations_total_label": "Reservations",
+    "evolution_title": "Sign-up trend (last 10 days)",
+    "date_header": "Date",
+    "registrations_header": "Sign-ups",
+    "feedback_title": "Recent feedback",
+    "delete_confirm": "Delete this feedback?",
+    "delete_button": "Delete",
+    "no_feedback": "No feedback yet."
+  },
+  "errors": {
+    "server_title": "Server error",
+    "not_found_title": "Page not found",
+    "httpcat_note": "This image is provided by http.cat to make the error more amusing!"
+  },
+  "emails": {
+    "reservation": {
+      "title": "New request!",
+      "greeting": "Hello",
+      "interested": "Good news! A user is interested in your",
+      "requester_label": "Requester:",
+      "email_label": "Email:",
+      "message_label": "Requester message:",
+      "contact_reply": "You can contact this person directly by replying to this email.",
+      "reply_button": "Reply to requester",
+      "auto_notice": "This is an automatic message, please do not reply directly."
+    }
   }
 }
