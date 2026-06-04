@@ -77,7 +77,7 @@ async create({ view, auth }: HttpContext) {
     let fileName: string | null = null
     if (payload.image && payload.image.tmpPath) {
       fileName = `${cuid()}.webp`
-      const uploadPath = app.makePath('public/uploads/items', fileName)
+      const uploadPath = app.makePath(app.publicPath('uploads/items'), fileName)
       await sharp(payload.image.tmpPath)
         .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
         .webp({ quality: 75 })
@@ -151,7 +151,7 @@ async create({ view, auth }: HttpContext) {
 
     if (payload.image) {
       const fileName = `${cuid()}.webp`
-      const uploadPath = app.makePath('public/uploads/items', fileName)
+      const uploadPath = app.makePath(app.publicPath('uploads/items'), fileName)
 
       if (payload.image.tmpPath) {
         await sharp(payload.image.tmpPath)

@@ -92,7 +92,7 @@ async create({ view, auth }: HttpContext) {
     let fileName: string | null = null
     if (payload.image && payload.image.tmpPath) {
       fileName = `${cuid()}.webp`
-      const uploadPath = app.makePath('public/uploads/items', fileName)
+      const uploadPath = app.makePath(app.publicPath('uploads/items'), fileName)
       await sharp(payload.image.tmpPath)
         .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
         .webp({ quality: 75 })
@@ -250,12 +250,12 @@ async create({ view, auth }: HttpContext) {
       // Supprimer l'ancienne image si elle existe
       if (object.imagePath) {
         try {
-          await fs.unlink(app.makePath('public/uploads/items', object.imagePath))
+          await fs.unlink(app.makePath(app.publicPath('uploads/items'), object.imagePath))
         } catch (e) {}
       }
       // Enregistrer la nouvelle image
       const fileName = `${cuid()}.webp`
-      const uploadPath = app.makePath('public/uploads/items', fileName)
+      const uploadPath = app.makePath(app.publicPath('uploads/items'), fileName)
       await sharp(payload.image.tmpPath)
         .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
         .webp({ quality: 75 })
