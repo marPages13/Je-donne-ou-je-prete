@@ -18,7 +18,7 @@
       "email": "albertbraimi@gmail.com"
     }
   ],
-"scripts": {
+  "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
     "build-img-l": "mkdir -p build/public/uploads/items && mkdir -p ./items_backup && cp -r build/public/uploads/items/. ./items_backup/ && node ace build && mkdir -p build/public/uploads/items && cp -r ./items_backup/. build/public/uploads/items/ && rm -rf ./items_backup",
@@ -73,6 +73,7 @@
     "@adonisjs/auth": "^9.5.1",
     "@adonisjs/bouncer": "^3.1.6",
     "@adonisjs/core": "^6.19.1",
+    "@adonisjs/drive": "^3.4.1",
     "@adonisjs/hash": "^9.1.1",
     "@adonisjs/i18n": "^2.2.3",
     "@adonisjs/lucid": "^21.8.1",

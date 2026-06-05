@@ -79,7 +79,7 @@ async create({ view, auth }: HttpContext) {
     if (payload.image && payload.image.tmpPath) {
       fileName = `${cuid()}.webp`
       const customFolder = env.get('UPLOAD_DIR');
-      const uploadPath = customFolder ? path.join(customFolder, fileName) : app.makePath(app.publicPath('uploads/items'), fileName);
+      const uploadPath = customFolder ? path.join(customFolder, fileName) : app.makePath('storage/uploads', fileName);
       await sharp(payload.image.tmpPath)
         .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
         .webp({ quality: 75 })
@@ -154,7 +154,7 @@ async create({ view, auth }: HttpContext) {
     if (payload.image) {
       const fileName = `${cuid()}.webp`
       const customFolder = env.get('UPLOAD_DIR');
-      const uploadPath = customFolder ? path.join(customFolder, fileName) : app.makePath(app.publicPath('uploads/items'), fileName);
+      const uploadPath = customFolder ? path.join(customFolder, fileName) : app.makePath('storage/uploads', fileName);
 
       if (payload.image.tmpPath) {
         await sharp(payload.image.tmpPath)

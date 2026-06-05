@@ -60,6 +60,7 @@ export default defineConfig({
       file: () => import('@adonisjs/mail/mail_provider'),
       environment: ['web', 'console', 'test'],
     },
+    () => import('@adonisjs/drive/drive_provider')
   ],
 
   /*
