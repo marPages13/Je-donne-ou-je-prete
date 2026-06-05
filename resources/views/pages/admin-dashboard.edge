@@ -1,9 +1,9 @@
-@let(title = 'Administration')
+@let(title = t('messages.admin.title'))
 @let(css = 'admin.css')
 @include('partials/header')
 
 <main class="admin-container">
-  <h1>Tableau de bord - Administration</h1>
+  <h1>{{ t('messages.admin.dashboard_title') }}</h1>
 
   @include('partials/flash')
 
@@ -12,34 +12,33 @@
   <div class="admin-grid">
     <div class="left-column">
       <section class="stats-cards">
-        <p class="muted small">Les totaux ci‑dessous ne comptent que les objets actifs : les éléments archivés ou
-          automatiquement supprimés après 120 jours sont exclus.</p>
+        <p class="muted small">{{ t('messages.admin.note') }}</p>
         <div class="card">
-          <h3>Utilisateurs inscrits</h3>
+          <h3>{{ t('messages.admin.users_total_label') }}</h3>
           <p class="big">{{ stats.usersTotal }}</p>
         </div>
         <div class="card">
-          <h3>Annonces de don/prêt</h3>
+          <h3>{{ t('messages.admin.donations_total_label') }}</h3>
           <p class="big">{{ stats.donationsTotal }}</p>
         </div>
         <div class="card">
-          <h3>Recherches en cours</h3>
+          <h3>{{ t('messages.admin.searches_total_label') }}</h3>
           <p class="big">{{ stats.chercheTotal }}</p>
         </div>
         <div class="card">
-          <h3>Réservations</h3>
+          <h3>{{ t('messages.admin.reservations_total_label') }}</h3>
           <p class="big">{{ stats.reservationsTotal }}</p>
         </div>
       </section>
 
       <section class="users-series">
-        <h2>Évolution des inscriptions (10 derniers jours)</h2>
+        <h2>{{ t('messages.admin.evolution_title') }}</h2>
         <div class="series-table-wrap">
           <table id="users-series">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Inscriptions</th>
+                <th>{{ t('messages.admin.date_header') }}</th>
+                <th>{{ t('messages.admin.registrations_header') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -58,7 +57,7 @@
 
     <aside class="right-column">
       <section class="feedback-list">
-        <h2>Feedback récents</h2>
+        <h2>{{ t('messages.admin.feedback_title') }}</h2>
         @if(feedbacks && feedbacks.length > 0)
         <div class="feedback-rows">
           @each(fb in feedbacks)
@@ -70,16 +69,16 @@
             <div class="feedback-message">{{ fb.message }}</div>
             <div class="feedback-actions">
               <form action="{{ route('admin.feedbacks.destroy', { id: fb.id }) }}?_method=DELETE" method="POST"
-                onsubmit="return confirm('Supprimer ce feedback ?')">
+                onsubmit="return confirm('{{ t('messages.admin.delete_confirm') }}')">
                 {{ csrfField() }}
-                <button type="submit" class="btn-delete">Supprimer</button>
+                <button type="submit" class="btn-delete">{{ t('messages.admin.delete_button') }}</button>
               </form>
             </div>
           </div>
           @end
         </div>
         @else
-        <p>Aucun feedback pour le moment.</p>
+        <p>{{ t('messages.admin.no_feedback') }}</p>
         @end
       </section>
     </aside>
