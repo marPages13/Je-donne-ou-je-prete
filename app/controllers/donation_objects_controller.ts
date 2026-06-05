@@ -92,7 +92,8 @@ async create({ view, auth }: HttpContext) {
     let fileName: string | null = null
     if (payload.image && payload.image.tmpPath) {
       fileName = `${cuid()}.webp`
-      const uploadPath = app.makePath(app.publicPath('uploads/items'), fileName)
+      const customFolder = env.get('UPLOAD_DIR'); 
+      const uploadPath = customFolder ? path.join(customFolder, fileName) : app.makePath(app.publicPath('uploads/items'), fileName);
       await sharp(payload.image.tmpPath)
         .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
         .webp({ quality: 75 })
@@ -250,12 +251,15 @@ async create({ view, auth }: HttpContext) {
       // Supprimer l'ancienne image si elle existe
       if (object.imagePath) {
         try {
-          await fs.unlink(app.makePath(app.publicPath('uploads/items'), object.imagePath))
+          const customFolder = env.get('UPLOAD_DIR');
+          const uploadFolder = customFolder || app.publicPath('uploads/items');
+          await fs.unlink(app.makePath(uploadFolder, object.imagePath))
         } catch (e) {}
       }
       // Enregistrer la nouvelle image
       const fileName = `${cuid()}.webp`
-      const uploadPath = app.makePath(app.publicPath('uploads/items'), fileName)
+      const customFolder = env.get('UPLOAD_DIR');
+      const uploadPath = customFolder ? path.join(customFolder, fileName) : app.makePath(app.publicPath('uploads/items'), fileName);
       await sharp(payload.image.tmpPath)
         .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
         .webp({ quality: 75 })
