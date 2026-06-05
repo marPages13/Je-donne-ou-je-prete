@@ -13,6 +13,7 @@ import CherchePolicy from '#policies/cherche_policy'
 import { purgeSoftDeletedObjects } from '#services/objects_retention_service'
 import { sendWithPool } from '#services/mail_pool'
 import env from '#start/env'
+import path from 'path'
 
 export default class ChercheObjectsController {
   /**

@@ -14,6 +14,7 @@ import DonationPolicy from '#policies/donation_policy'
 import { sendWithPool } from '#services/mail_pool'
 import { purgeSoftDeletedObjects } from '#services/objects_retention_service'
 import env from '#start/env'
+import path from 'path'
 
 export default class DonationObjectsController {
   /**
